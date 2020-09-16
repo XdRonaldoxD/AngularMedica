@@ -1,0 +1,53 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                <h4 class="card-title">{{grafico.graficos.leyenda}} </h4>
+                <app-grafica-dona
+                [ChartLabels]="grafico.graficos.labels"
+                [ChartData]="grafico.graficos.data"
+                [ChartType]="grafico.graficos.type">
+                </app-grafica-dona>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">{{grafico.graficos2.leyenda}} </h4>
+                    <app-grafica-dona
+                    [ChartLabels]="grafico.graficos2.labels"
+                    [ChartData]="grafico.graficos2.data"
+                    [ChartType]="grafico.graficos2.type">
+                    </app-grafica-dona>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">{{grafico.graficos3.leyenda}} </h4>
+                    <app-grafica-dona
+                    [ChartLabels]="grafico.graficos3.labels"
+                    [ChartData]="grafico.graficos3.data"
+                    [ChartType]="grafico.graficos3.type">
+                    </app-grafica-dona>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">{{grafico.graficos4.leyenda}} </h4>
+                    <app-grafica-dona
+                    [ChartLabels]="grafico.graficos4.labels"
+                    [ChartData]="grafico.graficos4.data"
+                    [ChartType]="grafico.graficos4.type">
+                    </app-grafica-dona>
+                </div>
+            </div>
+        </div>
+ 
+    </div>
+</div>

@@ -1,4 +1,8 @@
 import { Component } from '@angular/core';
+import { SeetingService } from './services/service.index';
+
+
+
 
 @Component({
   selector: 'app-root',

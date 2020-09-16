@@ -1,0 +1,19 @@
+<p> {{ leyenda }} - {{progreso}} </p>
+<div class="input-group mb-3">
+    <div class="input-group-btn">
+        <span class="input-group-text">
+            <button class="btn btn-secondary" type="button" (click)="cambiarvalor(+5)">
+                <i class="fa fa-plus" aria-hidden="true"></i>
+            </button>
+        </span>
+    </div>
+    <input #txtprogrees type="number" class="form-control" name="progreso" [(ngModel)]="progreso" 
+    aria-label="Amount (to the nearest dollar)" min="1" max="100" (ngModelChange)="onchanges($event)">
+    <div class="input-group-btn">
+        <span class="input-group-text">
+            <button class="btn btn-secondary" type="button" (click)="cambiarvalor(-5)">
+                <i class="fa fa-minus" aria-hidden="true"></i>
+            </button>
+        </span>
+    </div>
+</div>

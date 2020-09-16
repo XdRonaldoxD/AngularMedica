@@ -1,0 +1,732 @@
+
+    <button routerLink="/RegistrarPaciente" class="btn  btn-success btn-flat  btn-sm mb-2 text-white" >
+        <i class="fa fa-user"  aria-hidden="true"></i> Agregar Nueva Historia Clinica</button>
+
+        <div class="table-responsive">
+            <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-hover" >
+                <thead>
+                    <tr style="vertical-align: middle;text-align: center;"  class="text-uppercase">
+                        <th>N° CITA MEDICA</th>
+                        <th>DNI</th>
+                        <th>Nombres</th>
+                        <th>Apellidos</th>
+                        <th>Ver Historia</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <ng-container *ngFor="let e of data">
+                        <tr style="vertical-align: middle;text-align: center;">
+                            <td>{{e.nCitamed}}</td>
+                            <td>{{e.dni}}</td>
+                            <td>{{e.nombre}} </td>
+                            <td>{{e.apellido}}</td>
+                            <td>  
+                                <button class="btn btn-primary btn-sm text-white"  (click)="ConsultaHistoria(e.id)" tooltip="Consultar Historia">
+                                    <i class="fa fa-id-card" aria-hidden="true"></i> </button>
+                            </td>
+                            <td>
+                                <div class="row text-center" >
+                                    <div class="col-md-12">
+                                        <button class="btn btn-warning btn-sm text-white" data-toggle="modal"
+                                        data-target=".bd-example-modal-lg" (click)="RenovarDato(e.id)" tooltip="Renovar Paciente">
+                                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i> </button>
+                            
+                                        <button class="btn  btn-success btn-sm text-white ml-1" data-toggle="modal"
+                                        data-target=".bd-eliminar-modal-lg" (click)="openModal(template,e.id)" tooltip="Información Paciente">
+                                        <i class="fa fa-info-circle mr-1"  aria-hidden="true"></i></button>
+
+ 
+                                        <button class="btn btn-dark btn-sm text-white ml-1" data-toggle="modal"
+                                        data-target=".bd-eliminar-modal-lg"(click)="openReporte(reportes,e.id)" tooltip="Exportar Historia">
+                                        <i class="fa fa-file-pdf-o mr-1"  aria-hidden="true"></i></button>
+        
+                                        <button class="btn  btn-danger btn-sm text-white ml-1 " data-toggle="modal"
+                                        data-target=".bd-eliminar-modal-lg" (click)="EliminarDato(e.nombre,e.id)" tooltip="Eliminar Paciente">
+                                        <i class="fa fa-times-circle mr-1"  aria-hidden="true"></i></button>
+
+                                        <button class="btn  btn-info btn-sm text-white ml-1 " data-toggle="modal"
+                                        data-target=".bd-eliminar-modal-lg"  (click)="AlmacenarDatoPaciente(e.nombre,e.id)" tooltip="Almacenar Historia Clinica">
+                                        <i class="fa fa-user"  aria-hidden="true"></i></button>
+                                    </div>
+                                  
+                                </div>
+                            </td>
+                        </tr>
+                    </ng-container>
+                </tbody>
+            </table>
+        </div>
+
+        <ng-template #template>
+            <!-- <form  #registrarDoctor="ngForm" (ngSubmit)="EnviandoDoctor(registrarDoctor)"> -->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="modal-header">
+                            <h4 class="modal-title text-break">INFORMACION DEL PACIENTE</h4>
+                            <button type="button" class="close" (click)="modalRef.hide()" aria-h6="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                
+                        <div class="modal-body">
+                            <div  class="card-body">
+                               
+                                <div class="tab-content br-n pn">
+                                    <div id="navpills-1" class="tab-pane active">
+                                        <div class="card-body p-0">
+                                            <div class="row">
+                                                <div class="col-md-12 mb-3 "  *ngIf="paciente.Imagen!=null">
+                                                    <div class="d-flex justify-content-center">
+                                                        <img src="{{url+'perfil/'+this.paciente.Imagen}}"  class="img-bordered-sm w-25" >
+                                                    </div>
+                                               
+                                                </div>
+                                                <div class="col-6">
+                                                    <strong class="box-title text-success">N° Cita Medica  </strong>
+                                                    <div class="input-group">
+                                                  
+                                                            <div class="input-group-text" id="btnGroupAddon">
+                                                                <i class="fa fa-address-card" aria-hidden="true"></i></div>
+                                                
+                                                        <p class="parrafo">{{paciente.NumeroCitaMedica}}</p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <strong for="" class="h6" class="p-0 m-0 text-success">Nombres del Paciente </strong>
+                                                    <div class="input-group">
+                                                            <div class="input-group-text" id="btnGroupAddon"><i class="fa fa-user-circle-o"
+                                                                    aria-hidden="true"></i></div>
+                                                       <p class="parrafo">{{paciente.NombrePaciente}}</p>
+                                                   
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <strong for="apellido" class="h6" class="p-0 m-0 text-success">Apellidos </strong>
+                                                    <div class="input-group">
+                                                            <div class="input-group-text" id="btnGroupAddon"><i class="fa fa-user-circle"
+                                                                    aria-hidden="true"></i></div>
+                                                       
+                                                       <p class="parrafo">{{paciente.ApellidoPaciente}}</p>
+                                                            
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <strong for="Sexo" class="h6" class="p-0 m-0 text-success">Sexo </strong>
+                                                    <div class="input-group">
+                                                            <div class="input-group-text" id="btnGroupAddon"><i class="fa fa-venus-mars"
+                                                                    aria-hidden="true"></i></div>
+                                                       <p class="parrafo">{{paciente.SexoPaciente}}</p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <strong  class="p-0 m-0 text-success">DNI </strong>
+                                                    <div class="input-group">
+                                                            <div class="input-group-text" id="btnGroupAddon"><i class="fa fa-id-card"
+                                                                    aria-hidden="true"></i></div>
+                                                        <p class="parrafo">{{paciente.Dni}}</p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 ">
+                                                    <strong  class="p-0 m-0 text-success">Fecha Nacimiento</strong>
+                                                    <div class="input-group">
+                                                        <p class="parrafo">{{paciente.FechaNaciemto}}</p>
+                                                    </div>
+                             
+                                                </div>
+                                                <div class="col-6">
+                                                    <strong class="h6" class="p-0 m-0 text-success">Edad </strong>
+                                                    <div class="input-group">
+                                                            <div class="input-group-text" id="btnGroupAddon"><i class="fa fa-address-book-o"
+                                                                    aria-hidden="true"></i></div>
+                                                       <p class="parrafo">{{paciente.Edad}}</p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <strong class="text-success">Dirección</strong>
+                                                    <div class="input-group">
+                                                     
+                                                            <div class="input-group-text" id="btnGroupAddon"><i class="fa fa-address-card-o"
+                                                                    aria-hidden="true"></i></div>
+                                                     
+                                                       <p class="parrafo">{{paciente.Direccion}}</p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <strong class="h6" class="p-0 m-0 text-success">Celular/Movil</strong>
+                                                    <div class="input-group" *ngIf="this.paciente.Celular!=null">
+                                                            <div class="input-group-text" id="btnGroupAddon"><i class="fa fa-mobile"
+                                                                    aria-hidden="true"></i></div>
+                                                    
+                                                        <p class="parrafo"> {{paciente.Celular}}</p>
+                                                    </div>
+                                                    <div class="text-center" *ngIf="this.paciente.Celular==null">
+                                                        <p>No tiene Informacion</p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <strong class="h6" class="p-0 m-0 text-success">Whatsapp</strong>
+                                                    <div class="input-group" *ngIf="this.paciente.Whatsapp!=null">
+                                                     
+                                                            <div class="input-group-text" id="btnGroupAddon"><i class="fa fa-whatsapp"
+                                                                    aria-hidden="true"></i></div>
+                                                    
+                                                        
+                                                       <p class="parrafo">{{paciente.Whatsapp}}</p>
+                                                    </div>
+                                                    <div class="text-center" *ngIf="this.paciente.Whatsapp==null">
+                                                        <p>No tiene Información</p> 
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <strong for="" class="text-success">Correo Electronico </strong>
+                                                    <div class="input-group" *ngIf="this.paciente.Correo!=null">
+                                                            <div class="input-group-text" id="btnGroupAddon"><i class="fa fa-envelope-o"
+                                                                    aria-hidden="true"></i></div>
+                                                       <p class="parrafo">{{paciente.Correo}}</p>
+                                                    </div>
+                                                    <div class="text-center" *ngIf="this.paciente.Correo==null">
+                                                        <p>No tiene Información</p> 
+                                                 </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <strong for="facebook" class="text-success">Nombre de Facebook</strong>
+                                                    <div class="input-group" *ngIf="this.paciente.NombreFacebook!=null">
+                                                            <div class="input-group-text" id="btnGroupAddon"><i class="fa fa-facebook-official"
+                                                                    aria-hidden="true"></i></div>
+                                                       <p class="parrafo">{{paciente.NombreFacebook}}</p>
+                                                    </div>
+                                                    <div  *ngIf="this.paciente.NombreFacebook==null">
+                                                           <p>No tiene Información</p> 
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <strong for="entercentroM" class="text-success">Como nos Contacto</strong>
+                                                    <div class="form-group">
+                                                        <p *ngIf="this.paciente.Formacontactar!=null">{{paciente.Formacontactar}}</p>
+                                                        <p class="text-center" *ngIf="this.paciente.Formacontactar==null">No tiene Información</p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <strong for="motivoCons" class="text-success">Motivo de la Consulta</strong>
+                                                        <p [innerHTML]="paciente.MotivoConsulta" *ngIf="this.paciente.MotivoConsulta!=null">{{paciente.MotivoConsulta}}</p>
+                                                        <p class="text-center" *ngIf="this.paciente.MotivoConsulta==null">No tiene Información</p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <div class="row">
+                                                            <div class="col-md-2 text-center">
+                                                                <h6 for="GP" class="text-success">GP:</h6>
+                                                                <p *ngIf="this.paciente.GP!=null">{{paciente.GP}}</p>
+                                                                <p class="text-center" *ngIf="this.paciente.GP==null" >No tiene Información</p>
+                                                            </div>
+                                                            <div class="col-md-2 text-center">
+                                                                <h6 for="FUR" class="text-success">FUR:</h6>
+                                                                <p *ngIf="this.paciente.FUR!=null">{{paciente.FUR}}</p>
+                                                                    <p class="text-center" *ngIf="this.paciente.FUR==null" >No tiene Información</p>
+                                                            </div>
+                                                            <div class="col-md-2 text-center">
+                                                                <h6 for="PAP" class="text-success">PAP:</h6>
+                                                                <p *ngIf="this.paciente.PAP!=null">{{paciente.PAP}}</p>
+                                                                <p class="text-center" *ngIf="this.paciente.PAP==null" >No tiene Información</p>
+                                                            </div>
+                                                            <div class="col-md-2 text-center">
+                                                                <h6 for="" class="text-success">MAC:</h6>
+                                                                <p *ngIf="this.paciente.MAC!=null">{{paciente.MAC}}</p>
+                                                                <p class="text-center" *ngIf="this.paciente.MAC==null" >No tiene Información</p>
+                                                            </div>
+                                                            <div class="col-md-2 text-center">
+                                                                <h6 for="" class="text-success">RAM:</h6>
+                                                                    <p *ngIf="this.paciente.RAM!=null">{{paciente.RAM}}</p>
+                                                                    <p class="text-center" *ngIf="this.paciente.RAM==null" >No tiene Información</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <h6 for="antecedenteP" class="text-success">Antecedentes Personales</h6>
+                                                            <p [innerHTML]="paciente.AntecendesPersonales">{{paciente.AntecendesPersonales}}</p>
+                                                            <p class="text-center" *ngIf="this.paciente.AntecendesPersonales==null">No tiene Información</p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <h6 for="antecedenteF" class="text-success">Antecedentes Familiares</h6>
+                                                            <p [innerHTML]="paciente.AntecendesFamiliares" *ngIf="this.paciente.AntecendesFamiliares!=null">{{paciente.AntecendesFamiliares}}</p>
+                                                            <p class="text-center" *ngIf="this.paciente.AntecendesFamiliares==null">No tiene Información</p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <h6 class="h4 text-uppercase text-success">Examen Clinico</h6>
+                                                        <div class="row">
+                                                            <div class="col-md-2 text-center">
+                                                                <h6 for="" class="text-success ">PA</h6>
+                                                                    <p  *ngIf="this.paciente.PA!=null">{{paciente.PA}}</p>
+                                                                    <p  *ngIf="this.paciente.PA==null">No tiene Información</p>
+                                                            </div>
+                                                            <div class="col-md-2 text-center">
+                                                                <h6 for="" class="text-success">T<strong style="color: green;">(c°)</strong></h6>
+                                                                <p  *ngIf="this.paciente.T!=null">{{paciente.T}}</p>
+                                                                <p  *ngIf="this.paciente.T==null">No tiene Información</p>
+                                                            </div>
+                                                            <div class="col-md-2 text-center">
+                                                                <h6 for="" class="text-success">FC</h6>
+                                                                    <p  *ngIf="this.paciente.FC!=null">{{paciente.FC}}</p>
+                                                                    <p  *ngIf="this.paciente.FC==null">No tiene Información</p>
+                                                            </div>
+                                                            <div class="col-md-2 text-center">
+                                                                <h6 for="" class="text-success">FR</h6>
+                                                                    <p *ngIf="this.paciente.FR!=null">{{paciente.FR}}</p>
+                                                                    <p *ngIf="this.paciente.FR==null">No tiene Información</p>
+                                                            </div>
+                                                            <div class="col-md-2 text-center">
+                                                                <h6 for="" class="text-success">Peso<strong style="color: green;">(kg)</strong></h6> 
+                                                                    <p *ngIf="this.paciente.Peso!=null">{{paciente.Peso}}</p>
+                                                                    <p *ngIf="this.paciente.Peso==null">No tiene Información</p>
+                                                            </div>
+                                                            <div class="col-md-2 text-center">
+                                                                <h6 for="" class="text-success">Talla <strong style="color: green;">(cm)</strong></h6>
+                                                                    <p *ngIf="this.paciente.Talla!=null">{{paciente.Talla}}</p>
+                                                                    <p *ngIf="this.paciente.Talla==null">No tiene Información</p>
+                                                            </div>
+                                
+                                                            <div class="col-md-12 mt-3" *ngIf="this.paciente.ComentarioExamenClinico!=null">
+                                                                    <p [innerHTML]="paciente.ComentarioExamenClinico" >{{paciente.ComentarioExamenClinico}}</p>
+                                                            </div>
+                                                            <div class="col-md-12  text-center" *ngIf="this.paciente.ComentarioExamenClinico==null">
+                                                            <p>No tiene Información</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <div class="form-group" >
+                                                        <strong class="h6 text-success">Listas de Diagnosticos :
+                                                            <div id="adicionados"></div>
+                                                        </strong>
+                                                        <table id="mytable" class="table table-bordered table-hover " *ngIf="diagnosticado!=null">
+                                                            <thead class="text-center">
+                                                            <tr>
+                                                                <th>Dignóstico</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="diagnos-list" class="text-center" >
+                                                            <ng-container *ngFor="let elemento of diagnosticado">
+                                                                <tr>
+                                                                    <td>{{elemento}}</td>
+                                                                </tr>
+                                                            </ng-container>
+                                                        </tbody>
+                                                        </table>
+                                                        <div class="text-center">
+                                                            <p  *ngIf="diagnosticado==null">No tiene Información</p>
+                                                        </div>
+                                                           
+                                                    </div>
+                                                  
+                                                  
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <strong class="h6 text-success">Tratamiento
+
+                                                        </strong>
+                                                        <table id="mytable" class="table table-bordered table-hover " *ngIf="Tratamientos!=null">
+                                                            <thead class="text-center">
+                                                            <tr>
+                                                                <th>Indicaciones</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="diagnos-list" class="text-center" >
+                                                            <ng-container *ngFor="let indicacion of Tratamientos">
+                                                                <tr>
+                                                                    <td [innerHTML]="indicacion.indicaciones">{{indicacion.indicaciones}}</td>
+                                                                </tr>
+                                                            </ng-container>
+
+                                                        </tbody>
+                                                        </table>
+                                                        <div class="text-center"  *ngIf="Tratamientos==null">
+                                                            <p >No tiene Información</p>
+                                                        </div>
+
+                                
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12" *ngIf="this.paciente.documentoLabotario!=null">
+                                                    <div class="form-group">
+                                                        <h6  class="text-success">Documento del Laboratorio</h6>
+                                                        <div class="row">
+                                                            <div class="col-md-1  ml-4 ">
+                                                                <i style="font-size: 26px;color: red;" class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                                                            </div>
+                                                            <div class="col-md-7 m-0 p-0">
+                                                                <p>El paciente tiene su documento guardado.</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <h6  class="text-success">Imageneologia</h6>
+                                                    <div class="form-group" *ngIf="this.paciente.imageneologia!=null">
+                                                      
+                                                            <p [innerHTML]="paciente.imageneologia">{{paciente.imageneologia}}</p>
+                                                    </div>
+                                                    <div class="text-center" *ngIf="this.paciente.imageneologia==null">
+                                                        <p>No tiene Información</p>
+                                                    </div>
+
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <strong for="entercentroM" class="text-success">Proxima Cita</strong>
+                                                    <div class="form-group text-center">
+                                                        <p *ngIf="this.paciente.proximacita!=null">{{paciente.proximacita | date: 'short' }}</p>
+                                                        <p *ngIf="this.paciente.proximacita==null">No tiene Información</p>
+                                                    </div>
+                                                </div>
+                                                
+
+                                            </div>
+                                        </div>
+                                    </div>
+  
+        
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <a class="btn btn-dark text-white " (click)="modalRef.hide()">
+                                Regresar  <i class="fa fa-sign-out"></i>
+                            </a>
+                        </div>
+                
+                    </div>
+                </div>
+            </div>
+            <!-- </form> -->
+        </ng-template>
+
+        
+        <ng-template #reportes>
+            <!-- <form  #registrarDoctor="ngForm" (ngSubmit)="EnviandoDoctor(registrarDoctor)"> -->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="modal-body p-0 m-0">
+                            <div  id="element-to-export" class="card-body p-0">
+                                <div class="tab-content br-n pn">
+                                    <div id="navpills-1" class="tab-pane active">
+                                        <div class="card-body p-0">
+                                            <div class="row">
+                                                <div class="col-md-12 mb-1">
+                                                    <div class="">
+                                                        <img src="../../../assets/images/sangeronimo.jpg" style="width: 100%;" >
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12 d-flex justify-content-center">
+                                                    <div class="row d-flex align-content-center justify-content-center">
+                                                        <strong class=" text-success h3">N° Cita Medica : </strong>
+                                                        <p class="h3 text-bold" >{{paciente.NumeroCitaMedica}}</p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12 d-flex justify-content-center">
+                                                    <div class="row d-flex align-content-center justify-content-center">
+                                                        <strong class=" text-success h6">Fecha Creación: </strong>
+                                                        <p class="text-bold" >{{fecha_creacion | date:'d/M/yyyy'}}</p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="row m-0">
+                                                        <strong for=""  class="p-0 m-0 text-success text-uppercase">Nombres: </strong>
+                                                        <div class="text-bold" style="margin-top: 2px;"> {{paciente.NombrePaciente}} {{paciente.ApellidoPaciente}}</div>
+                                                    </div>
+                                                   
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="row m-0">
+                                                        <strong  class="p-0 m-0 text-success  text-uppercase">DNI: </strong>
+                                                        <div class="text-bold" style="margin-top: 2px;"> {{paciente.Dni}}</div>
+                                                    </div>
+
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <div class="row m-0">
+                                                        <div class="col-md-4">
+                                                            <div class="row">
+                                                                <strong for="Sexo" class="p-0 m-0 text-success text-uppercase">Sexo: </strong>
+                                                                <div class="text-bold" style="margin-top: 2px;" >{{paciente.SexoPaciente}}</div>
+                                                            </div>
+                                                       
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <div class="row">
+                                                                <strong class="h6" class="p-0 m-0 text-success text-uppercase">Edad: </strong>
+                                                                <div class="text-bold" style="margin-top: 2px;" >{{paciente.Edad}} años</div>
+                                                            </div>
+                                                         
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <div class="row">
+                                                                <strong  class="p-0 m-0 text-success text-uppercase">Fecha Nacimiento: </strong>
+                                                                <div class="text-bold" style="margin-top: 2px;" >{{paciente.FechaNaciemto | date:'d/M/yyyy' }}</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-12">
+                                                    <div class="row m-0">
+                                                        <div class="col-md-4">
+                                                            <div class="row">
+                                                                <strong for="Sexo" class="p-0 m-0 text-success text-uppercase">Dirección: </strong>
+                                                                <div class="text-bold" style="margin-top: 2px;" >{{paciente.Direccion}}</div>
+                                                            </div>
+                                                       
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <div class="row">
+                                                                <strong class="h6" class="p-0 m-0 text-success text-uppercase">Celular/Movil: </strong>
+                                                                <div class="text-bold" style="margin-top: 2px;" >{{paciente.Celular}} </div>
+                                                            </div>
+                                                         
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <div class="row">
+                                                                <strong  class="p-0 m-0 text-success text-uppercase">Whatsapp: </strong>
+                                                                <div class="text-bold" style="margin-top: 2px;" >{{paciente.Whatsapp}}</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+
+                                                <div class="col-md-12">
+                                                    <div class="row m-0">
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <strong for="Sexo" class="p-0 m-0 text-success text-uppercase">Correo Electronico: </strong>
+                                                                <div class="text-bold" style="margin-top: 2px;" >{{paciente.Correo}}</div>
+                                                            </div>
+                                                       
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <strong class="h6" class="p-0 m-0 text-success text-uppercase">Nombre de Facebook: </strong>
+                                                                <div class="text-bold" style="margin-top: 2px;" >{{paciente.NombreFacebook}} </div>
+                                                            </div>
+                                                         
+                                                        </div>
+                                                     
+                                                    </div>
+
+                                                </div>
+                                            
+                                             
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                       <u> <strong for="motivoCons" class="text-success text-uppercase">Motivo de la Consulta</strong> </u>
+                                                        <p [innerHTML]="paciente.MotivoConsulta" *ngIf="this.paciente.MotivoConsulta!=null">{{paciente.MotivoConsulta}}</p>
+                                                        <p class="text-center" *ngIf="this.paciente.MotivoConsulta==null">No tiene Información</p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <div class="row">
+                                                            <div class="col-md-2 text-center">
+                                                                <h6 for="GP" class="text-success">GP:</h6>
+                                                                <p *ngIf="this.paciente.GP!=null">{{paciente.GP}}</p>
+                                                                <p class="text-center" *ngIf="this.paciente.GP==null" >No tiene Información</p>
+                                                            </div>
+                                                            <div class="col-md-2 text-center">
+                                                                <h6 for="FUR" class="text-success">FUR:</h6>
+                                                                <p *ngIf="this.paciente.FUR!=null">{{paciente.FUR}}</p>
+                                                                    <p class="text-center" *ngIf="this.paciente.FUR==null" >No tiene Información</p>
+                                                            </div>
+                                                            <div class="col-md-2 text-center">
+                                                                <h6 for="PAP" class="text-success">PAP:</h6>
+                                                                <p *ngIf="this.paciente.PAP!=null">{{paciente.PAP}}</p>
+                                                                <p class="text-center" *ngIf="this.paciente.PAP==null" >No tiene Información</p>
+                                                            </div>
+                                                            <div class="col-md-2 text-center">
+                                                                <h6 for="" class="text-success">MAC:</h6>
+                                                                <p *ngIf="this.paciente.MAC!=null">{{paciente.MAC}}</p>
+                                                                <p class="text-center" *ngIf="this.paciente.MAC==null" >No tiene Información</p>
+                                                            </div>
+                                                            <div class="col-md-2 text-center">
+                                                                <h6 for="" class="text-success">RAM:</h6>
+                                                                    <p *ngIf="this.paciente.RAM!=null">{{paciente.RAM}}</p>
+                                                                    <p class="text-center" *ngIf="this.paciente.RAM==null" >No tiene Información</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                       <u> <h6 for="antecedenteP" class="text-success text-uppercase">Antecedentes Personales</h6></u>
+                                                            <p [innerHTML]="paciente.AntecendesPersonales">{{paciente.AntecendesPersonales}}</p>
+                                                            <p class="text-center" *ngIf="this.paciente.AntecendesPersonales==null">No tiene Información</p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <u> <h6 for="antecedenteF" class="text-success text-uppercase">Antecedentes Familiares</h6></u>
+                                                            <p [innerHTML]="paciente.AntecendesFamiliares" *ngIf="this.paciente.AntecendesFamiliares!=null">{{paciente.AntecendesFamiliares}}</p>
+                                                            <p class="text-center" *ngIf="this.paciente.AntecendesFamiliares==null">No tiene Información</p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                       <u><h6 class="h4 text-uppercase text-success ">Examen Clinico</h6></u>
+                                                        <div class="row">
+                                                            <div class="col-md-2 text-center">
+                                                                <h6 for="" class="text-success ">PA</h6>
+                                                                    <p  *ngIf="this.paciente.PA!=null">{{paciente.PA}}</p>
+                                                                    <p  *ngIf="this.paciente.PA==null">No tiene Información</p>
+                                                            </div>
+                                                            <div class="col-md-2 text-center">
+                                                                <h6 for="" class="text-success">T<strong style="color: green;">(c°)</strong></h6>
+                                                                <p  *ngIf="this.paciente.T!=null">{{paciente.T}}</p>
+                                                                <p  *ngIf="this.paciente.T==null">No tiene Información</p>
+                                                            </div>
+                                                            <div class="col-md-2 text-center">
+                                                                <h6 for="" class="text-success">FC</h6>
+                                                                    <p  *ngIf="this.paciente.FC!=null">{{paciente.FC}}</p>
+                                                                    <p  *ngIf="this.paciente.FC==null">No tiene Información</p>
+                                                            </div>
+                                                            <div class="col-md-2 text-center">
+                                                                <h6 for="" class="text-success">FR</h6>
+                                                                    <p *ngIf="this.paciente.FR!=null">{{paciente.FR}}</p>
+                                                                    <p *ngIf="this.paciente.FR==null">No tiene Información</p>
+                                                            </div>
+                                                            <div class="col-md-2 text-center">
+                                                                <h6 for="" class="text-success">Peso<strong style="color: green;">(kg)</strong></h6> 
+                                                                    <p *ngIf="this.paciente.Peso!=null">{{paciente.Peso}}</p>
+                                                                    <p *ngIf="this.paciente.Peso==null">No tiene Información</p>
+                                                            </div>
+                                                            <div class="col-md-2 text-center">
+                                                                <h6 for="" class="text-success">Talla <strong style="color: green;">(cm)</strong></h6>
+                                                                    <p *ngIf="this.paciente.Talla!=null">{{paciente.Talla}}</p>
+                                                                    <p *ngIf="this.paciente.Talla==null">No tiene Información</p>
+                                                            </div>
+                                
+                                                            <div class="col-md-12 mt-3" *ngIf="this.paciente.ComentarioExamenClinico!=null">
+                                                                    <p [innerHTML]="paciente.ComentarioExamenClinico" >{{paciente.ComentarioExamenClinico}}</p>
+                                                            </div>
+                                                            <div class="col-md-12  text-center" *ngIf="this.paciente.ComentarioExamenClinico==null">
+                                                            <p>No tiene Información</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <div class="form-group" >
+                                                     <u>   <strong class="h6 text-success text-uppercase">Listas de Diagnosticos 
+                                                            <div id="adicionados"></div>
+                                                        </strong></u>
+                                                        <table id="mytable" class="table table-bordered table-hover " *ngIf="diagnosticado!=null">
+                                                            <thead class="text-center">
+                                                            <tr>
+                                                                <th>Dignóstico</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="diagnos-list" class="text-center" >
+                                                            <ng-container *ngFor="let elemento of diagnosticado">
+                                                                <tr>
+                                                                    <td>{{elemento}}</td>
+                                                                </tr>
+                                                            </ng-container>
+                                                        </tbody>
+                                                        </table>
+                                                        <div class="text-center">
+                                                            <p  *ngIf="diagnosticado==null">No tiene Información</p>
+                                                        </div>
+                                                           
+                                                    </div>
+                                                  
+                                                  
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                       <u> <strong class="h6 text-success text-uppercase">Tratamiento</strong></u>
+                                                        <table id="mytable" class="table table-bordered table-hover " *ngIf="Tratamientos!=null">
+                                                            <thead class="text-center">
+                                                            <tr>
+                                                                <th>Indicaciones</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="diagnos-list" class="text-center" >
+                                                            <ng-container *ngFor="let indicacion of Tratamientos">
+                                                                <tr>
+                                                                    <td [innerHTML]="indicacion.indicaciones">{{indicacion.indicaciones}}</td>
+                                                                </tr>
+                                                            </ng-container>
+
+                                                        </tbody>
+                                                        </table>
+                                                        <div class="text-center"  *ngIf="Tratamientos==null">
+                                                            <p >No tiene Información</p>
+                                                        </div>
+
+                                
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12" *ngIf="this.paciente.documentoLabotario!=null">
+                                                    <div class="form-group">
+                                                       <u> <h6  class="text-success text-uppercase">Documento del Laboratorio</h6></u>
+                                                        <div class="row">
+                                                            <div class="col-md-1  ml-4 ">
+                                                                <i style="font-size: 26px;color: red;" class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                                                            </div>
+                                                            <div class="col-md-7 m-0 p-0">
+                                                                <p>El paciente tiene su documento guardado.</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                  <u>  <h6  class="text-success text-uppercase">Imageneologia</h6></u>
+                                                    <div class="form-group" *ngIf="this.paciente.imageneologia!=null">
+                                                      
+                                                            <p [innerHTML]="paciente.imageneologia">{{paciente.imageneologia}}</p>
+                                                    </div>
+                                                    <div class="text-center" *ngIf="this.paciente.imageneologia==null">
+                                                        <p>No tiene Información</p>
+                                                    </div>
+
+                                                </div>
+                                                <div class="col-md-12">
+                                                  <u>  <strong for="entercentroM" class="text-success text-uppercase">Proxima Cita</strong></u>
+                                                    <div class="form-group text-center">
+                                                        <p *ngIf="this.paciente.proximacita!=null">{{paciente.proximacita | date: 'short' }}</p>
+                                                        <p *ngIf="this.paciente.proximacita==null">No tiene Información</p>
+                                                    </div>
+                                                </div>
+                                                
+
+                                            </div>
+                                        </div>
+                                    </div>
+  
+        
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <a class="btn btn-dark text-white " (click)="modalRef.hide()">
+                                Regresar  <i class="fa fa-sign-out"></i>
+                            </a>
+                            <button class="btn btn-success text-white" (click)="onExportPdf();">
+                                Exportar Documento <i class="fa fa-file-pdf-o"></i></button>
+                        </div>
+                
+                    </div>
+                </div>
+            </div>
+            <!-- </form> -->
+        </ng-template>
+    

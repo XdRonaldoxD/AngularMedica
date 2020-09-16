@@ -1,0 +1,506 @@
+<div class="card shadow">
+    <div class="card-header border-0">
+        <div class="row align-items-center">
+            <div class="col">
+                <h3 class="box-title m-t-30 text-success">Crear Nueva Historia Clinica</h3>
+            </div>
+            <div class="col text-right">
+                <a routerLink="/HistoriaMedica" class=" btn-sm btn btn-success">
+                    Cancelar y volver <i class="fa fa-sign-out"></i> </a>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <form #registrarPaciente="ngForm" (ngSubmit)="EnviandoPaciente(registrarPaciente)"
+            enctype="multipart/form-data">
+            <div class="row">
+                <div class="col-md-12 mb-3 " *ngIf="imagen">
+                    <div class="d-flex justify-content-center">
+                        <img src="{{url+'perfil/'+this.paciente.Imagen}}" class="img-bordered-sm w-25">
+                    </div>
+
+                </div>
+                <div class="col-6">
+                    <h6 class="box-title text-success">N° Cita Medica <strong class="text-danger">*</strong> </h6>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text" id="btnGroupAddon">
+                                <i class="fa fa-address-card" aria-hidden="true"></i></div>
+                        </div>
+                        <input type="text" name="nCitamed" #nCitamed="ngModel" [(ngModel)]="paciente.NumeroCitaMedica"
+                            [ngClass]="{'is-valid': nCitamed.valid,'is-invalid': !nCitamed.valid && validar}"
+                            class="form-control" required>
+                    </div>
+                </div>
+                <div class="col-6" class="p-0 m-0 h6" *ngIf="!imagen">
+                    <div class="form-group">
+                        <h6 for="pacienteImg" class="text-success">Seleccionar Imagen del Paciente</h6>
+                        <angular-file-uploader [config]="afuConfig" [resetUpload]=resetVar
+                            (ApiResponse)="ImagenPacienteSubido($event)">
+                        </angular-file-uploader>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <h6 for="" class="h6" class="p-0 m-0 text-success">Nombres del Paciente <strong
+                            class="text-danger">*</strong></h6>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text" id="btnGroupAddon"><i class="fa fa-user-circle-o"
+                                    aria-hidden="true"></i></div>
+                        </div>
+                        <input type="text" name="nombrePaciente" #nombrePaciente="ngModel" pattern="[A-Za-z ]+"
+                            [(ngModel)]="paciente.NombrePaciente" class="form-control" required
+                            [ngClass]="{'is-valid': nombrePaciente.valid,'is-invalid':!nombrePaciente.valid && validar}">
+                    </div>
+                </div>
+                <div class="col-6">
+                    <h6 for="apellido" class="h6" class="p-0 m-0 text-success">Apellidos <strong
+                            class="text-danger">*</strong></h6>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text" id="btnGroupAddon"><i class="fa fa-user-circle"
+                                    aria-hidden="true"></i></div>
+                        </div>
+                        <input type="text" name="apellidoPaciente" #apellidoPaciente="ngModel" pattern="[A-Za-z ]+"
+                            [(ngModel)]="paciente.ApellidoPaciente" class="form-control" required
+                            [ngClass]="{'is-valid': apellidoPaciente.valid,'is-invalid':!apellidoPaciente.valid && validar}">
+                    </div>
+                </div>
+                <div class="col-6">
+                    <h6 for="Sexo" class="h6" class="p-0 m-0 text-success">Sexo <strong class="text-danger">*</strong>
+                    </h6>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text" id="btnGroupAddon"><i class="fa fa-venus-mars"
+                                    aria-hidden="true"></i></div>
+                        </div>
+                        <!-- <input type="text" name="Sexo" class="form-control " value="{{ old('Sexo')}}" required> -->
+                        <select name="Sexo" class="form-control" #Sexo="ngModel" [(ngModel)]="paciente.SexoPaciente"
+                            [ngStyle]="{'border': ( !selectGenero ) ? '1px solid red' : '1px solid green'}"
+                            (change)="CapturaGenero(paciente.SexoPaciente)">
+                            <option disabled value="" selected>Seleccione Genero</option>
+                            <option value="Masculino">Masculino</option>
+                            <option value="Femenino">Femenino</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <h6 for="DNI" class="h6" class="p-0 m-0 text-success">DNI <strong class="text-danger">*</strong>
+                    </h6>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text" id="btnGroupAddon"><i class="fa fa-id-card"
+                                    aria-hidden="true"></i></div>
+                        </div>
+                        <input type="text" [minLength]='5' [maxlength]='8' name="DNI"
+                            (change)="ValidarDNI(paciente.Dni)" #DNI="ngModel" [(ngModel)]="paciente.Dni"
+                            pattern="[0-9]+" class="form-control " required
+                            [ngClass]="{'is-valid': DNI.valid,'is-invalid': !DNI.valid || dnivalido || dniExistente}">
+                        <small *ngIf="dnivalido" class="invalid-feedback d-block">
+                            El DNI no es valido
+                        </small>
+                        <small *ngIf="dniExistente" class="invalid-feedback d-block">
+                            El DNI ya esta registrado
+                        </small>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <h6 class="h6" class="p-0 m-0 text-success">Fecha Nacimiento <strong class="text-danger">*</strong>
+                    </h6>
+                    <dx-date-box class="col-md-12" name="fechaNacimiento" #fechaNacimiento="ngModel" [value]="now"
+                        [(ngModel)]="fecha"
+                        [ngClass]="{'is-valid': fechaNacimiento.valid,'is-invalid': !fechaNacimiento.valid && validar}"
+                        type="datetime">
+                    </dx-date-box>
+                </div>
+                <div class="col-6">
+                    <h6 class="h6" class="p-0 m-0 text-success">Edad <strong class="text-danger">*</strong></h6>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text" id="btnGroupAddon"><i class="fa fa-address-book-o"
+                                    aria-hidden="true"></i></div>
+                        </div>
+                        <input type="number" name="edadPaciente" #edadPaciente="ngModel" [(ngModel)]="paciente.Edad"
+                            class="form-control" min="1" max="99" required
+                            [ngClass]="{'is-valid': edadPaciente.valid,'is-invalid': !edadPaciente.valid && validar}">
+                    </div>
+                </div>
+                <div class="col-6">
+                    <h6 class="text-success">Dirección</h6>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text" id="btnGroupAddon"><i class="fa fa-address-card-o"
+                                    aria-hidden="true"></i></div>
+                        </div>
+                        <input type="text" name="direccionPaciente" #direccionPaciente="ngModel"
+                            [(ngModel)]="paciente.Direccion" class="form-control" min="1" max="99" required>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <h6 class="h6" class="p-0 m-0 text-success">Celular/Movil</h6>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text" id="btnGroupAddon"><i class="fa fa-mobile"
+                                    aria-hidden="true"></i></div>
+                        </div>
+                        <input type="number" name="celularPaciente" #celularPaciente="ngModel"
+                            [(ngModel)]="paciente.Celular" name="celular" maxlength="9" class="form-control"
+                            pattern="[0-9]+">
+                    </div>
+                </div>
+                <div class="col-6">
+                    <h6 class="h6" class="p-0 m-0 text-success">Whatsapp</h6>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text" id="btnGroupAddon"><i class="fa fa-whatsapp"
+                                    aria-hidden="true"></i></div>
+                        </div>
+
+                        <input type="number" name="whatsapp" #whatsapp="ngModel" [(ngModel)]="paciente.Whatsapp"
+                            pattern="[0-9]+" class="form-control">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <h6 for="" class="text-success">Correo Electronico </h6>
+                    <div class="input-group">
+
+                        <div class="input-group-prepend">
+                            <div class="input-group-text" id="btnGroupAddon"><i class="fa fa-envelope-o"
+                                    aria-hidden="true"></i></div>
+                        </div>
+                        <input type="email" name="correo" #correo="ngModel" [(ngModel)]="paciente.Correo"
+                            class="form-control">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <h6 for="facebook" class="text-success">Nombre de Facebook</h6>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text" id="btnGroupAddon"><i class="fa fa-facebook-official"
+                                    aria-hidden="true"></i></div>
+                        </div>
+                        <input type="text" #facebook="ngModel" [(ngModel)]="paciente.NombreFacebook" name="facebook"
+                            class="form-control">
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <h6 for="entercentroM" class="text-success">Como nos Contacto</h6>
+                        <input type="text" name="Formacontactar" #Formacontactar="ngModel"
+                            [(ngModel)]="paciente.Formacontactar" class="form-control">
+                    </div>
+                </div>
+                <div class="col-md-12 text-center">
+                    <div class="form-group">
+                        <a (click)="renovarDatoPaciente(paciente.id_paciente)" class="text-white btn-sm btn btn-success">
+                            <i class="fa fa-paint-brush p-1" aria-hidden="true"></i>Renovar Datos Nuevo De Paciente
+                        </a>
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <h6 for="motivoCons" class="text-success">Motivo de la Consulta</h6>
+                        <ckeditor [(ngModel)]="paciente.MotivoConsulta" #MotivoConsulta="ngModel" name="MotivoConsulta"
+                            required [config]="ckeConfig" debounce="500">
+                        </ckeditor>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <h6 for="GP" class="text-success">GP</h6>
+                                <input type="text" name="GPaciente" #GPaciente="ngModel" [(ngModel)]="paciente.GP"
+                                    class="form-control">
+                            </div>
+                            <div class="col-md-2">
+                                <h6 for="FUR" class="text-success">FUR</h6>
+                                <input type="date" name="FUR" #FUR="ngModel" [(ngModel)]="paciente.FUR"
+                                    class="form-control">
+                            </div>
+                            <div class="col-md-2">
+                                <h6 for="PAP" class="text-success">PAP</h6>
+                                <input type="text" name="PAP" #PAP="ngModel" [(ngModel)]="paciente.PAP"
+                                    class="form-control">
+                            </div>
+                            <div class="col-md-2">
+                                <h6 for="" class="text-success">MAC</h6>
+                                <input type="text" name="MAC" #MAC="ngModel" [(ngModel)]="paciente.MAC"
+                                    class="form-control">
+                            </div>
+                            <div class="col-md-2">
+                                <h6 for="" class="text-success">RAM</h6>
+                                <input type="text" name="RAM" #RAM="ngModel" [(ngModel)]="paciente.RAM"
+                                    class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <h6 class="h4 text-uppercase text-success">Antecedentes Personales</h6>
+                        <ckeditor [(ngModel)]="paciente.AntecendesPersonales" #antecedenteP="ngModel"
+                            name="antecedenteP" required [config]="ckeConfig" debounce="500">
+                        </ckeditor>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <h6 class="h4 text-uppercase text-success">Antecedentes Familiares</h6>
+                        <ckeditor [(ngModel)]="paciente.AntecendesFamiliares" #antecedenteF="ngModel"
+                            name="antecedenteF" required [config]="ckeConfig" debounce="500">
+                        </ckeditor>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <h6 class="h4 text-uppercase text-success">Examen Clinico</h6>
+                        <div class="row">
+                            <div class="col-md-2">
+                                <h6 for="" class="text-success ">PA</h6>
+                                <input type="text" name="pa" #pa="ngModel" [(ngModel)]="paciente.PA"
+                                    class="form-control">
+                            </div>
+                            <div class="col-md-2">
+                                <h6 for="" class="text-success">T <strong style="color: green;">(c°)</strong></h6>
+                                <input type="number" name="t" #t="ngModel" [(ngModel)]="paciente.T"
+                                    class="form-control">
+                            </div>
+                            <div class="col-md-2">
+                                <h6 for="" class="text-success">FC</h6>
+                                <input type="text" name="fc" #fc="ngModel" [(ngModel)]="paciente.FC"
+                                    class="form-control">
+                            </div>
+                            <div class="col-md-2">
+                                <h6 for="" class="text-success">FR</h6>
+                                <input type="text" name="fr" #fr="ngModel" [(ngModel)]="paciente.FR"
+                                    class="form-control">
+                            </div>
+                            <div class="col-md-2">
+                                <h6 for="" class="text-success">Peso <strong style="color: green;">(kg)</strong></h6>
+                                <input type="number" name="Peso" #Peso="ngModel" [(ngModel)]="paciente.Peso"
+                                    class="form-control">
+                            </div>
+                            <div class="col-md-2">
+                                <h6 for="" class="text-success">Talla <strong style="color: green;">(cm)</strong></h6>
+                                <input type="number" name="Talla" #Talla="ngModel" [(ngModel)]="paciente.Talla"
+                                    class="form-control">
+                            </div>
+
+                            <div class="col-md-12 mt-3">
+                                <ckeditor [(ngModel)]="paciente.ComentarioExamenClinico" #Comentclinico="ngModel"
+                                    name="Comentclinico" required [config]="ckeConfig" debounce="500">
+                                </ckeditor>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <div class="form-group text-center align-content-center">
+                            <h6 class="h5 text-uppercase text-success">Tipo de Diagnostico</h6> <br>
+                            <div class="row ">
+                                <div class="col-md-5">
+                                    <input type="text" class="form-control" name="diagnostico" #diagnostico="ngModel"
+                                        [(ngModel)]="diagnosticado" placeholder="Escribir el Diagnostico..."></div>
+                                <button  id="adicionar" [disabled]="!diagnostico.touched"
+                                    (click)="Diagnostico(diagnosticado)" class="btn btn-success btn-sm mb--3"
+                                    type="button">Agregar</button>
+                            </div>
+
+                        </div>
+                        <strong class="h6 text-success">Listas de Diagnosticos :
+                            <div id="adicionados"></div>
+                        </strong>
+                        <table id="mytable" class="table table-bordered table-hover ">
+                            <thead class="text-center">
+                                <tr>
+                                    <th>Dignóstico</th>
+                                    <th>Eliminar</th>
+                                </tr>
+                            </thead>
+                            <tbody id="diagnos-list" class="text-center">
+
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+                <div class="col-md-12 mt-2 mb-2" *ngIf="mostrarTratamiento">
+                    <div class="form-group">
+                        <h5 class="text-success">TRATAMIENTO <strong> INDICACIONES MEDICAS </strong>
+                            <button type="button" (click)="openModal(template)" class=" btn-sm btn btn-success">
+                                <i class="fa fa-plus-square mr-1" aria-hidden="true"></i>Agregar Tratamiento
+                            </button>
+                        </h5>
+                    </div>
+                </div>
+                <div class="col-md-12" *ngIf="!documentoPaciente">
+                    <div class="form-group">
+                        <h6 for="imageneologia" class="h5 text-success">Documento del Laboratorio</h6>
+                        <div class="row">
+                            <div class="col-md-1  ml-4 ">
+                                <i style="font-size: 35px;color: red;" class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                            </div>
+                            <div class="col-md-7 m-0 p-0">
+                                <p>El paciente tiene su documento guardado.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12" *ngIf="documentoPaciente">
+                    <div class="form-group">
+                        <h6 for="documento" class="h5  text-success">Adjunta Documento del Laboratorio</h6>
+                        <angular-file-uploader [config]="DocumentoLaboratioPdf" [resetUpload]=resetVar
+                            (ApiResponse)="PdfPacienteSubido($event)">
+                        </angular-file-uploader>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <h5 class="text-success">IMAGENEOLOGIA</h5>
+                        <ckeditor [(ngModel)]="paciente.imageneologia" #imageneologia="ngModel" name="imageneologia"
+                            required [config]="ckeConfig" debounce="500">
+                        </ckeditor>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="form-group">
+                        <h6 for="pcita" class="text-success">Proxima Cita</h6>
+                        <dx-date-box class="col-md-12" name="proximacita" #proximacita="ngModel" [value]="nuevaCita"
+                            [(ngModel)]="proximaCita" type="datetime">
+                        </dx-date-box>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-success">
+                            <span><i class="fa fa-floppy-o" aria-hidden="true"></i>
+                            </span> Guardar</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<ng-template #template>
+    <!-- <form  #registrarDoctor="ngForm" (ngSubmit)="EnviandoDoctor(registrarDoctor)"> -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="modal-header">
+                    <h4 class="modal-title text-break">INDICACIONES DEL DOCTOR</h4>
+                    <button type="button" class="close" (click)="modalRef.hide()" aria-h6="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <form #registrarIndicaciones="ngForm" (ngSubmit)="EnviarIndicaciones(registrarIndicaciones)"
+                    enctype="multipart/form-data">
+                    <div class="modal-body">
+                        <div class="card-body">
+                            <ul class="nav nav-pills m-t-30 m-b-30">
+                                <li class=" nav-item"> <a href="#navpills-1" class="nav-link active" data-toggle="tab"
+                                        aria-expanded="false">Agregar Indicaciones del Doctor</a> </li>
+                                <li class="nav-item"> <a href="#navpills-2" class="nav-link " data-toggle="tab"
+                                        aria-expanded="false">Mostrar Indicaciones Agregados</a> </li>
+                            </ul>
+                            <div class="tab-content br-n pn">
+                                <div id="navpills-1" class="tab-pane active">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <h6 for="">Medicamento</h6>
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <div class="input-group-text" id="btnGroupAddon">
+                                                            <i class="fa fa-medkit" aria-hidden="true"></i></div>
+                                                    </div>
+                                                    <input type="text" name="medicamento" #medicamento="ngModel"
+                                                        [(ngModel)]="indicacion.medicamento" class="form-control"
+                                                        value="" [required]="true">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <h6 for="">Cantidad</h6>
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <div class="input-group-text" id="btnGroupAddon"><i
+                                                                class="fa fa-question-circle" aria-hidden="true"></i>
+                                                        </div>
+                                                    </div>
+                                                    <input type="number" name="cantidad" #cantidad="ngModel"
+                                                        [(ngModel)]="indicacion.cantidad" class="form-control"
+                                                        [required]="true">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <h6 for="formingerir">Indicaciones</h6>
+                                                    <ckeditor [(ngModel)]="indicacionDoctor" #formingerir="ngModel"
+                                                        name="formingerir" required [config]="ckeConfig" debounce="500">
+                                                    </ckeditor>
+                                                </div>
+                                            </div>
+                                            <div class="col-12">
+                                                <div class="form-group">
+                                                    <button type="submit"
+                                                        class="btn btn-success waves-effect waves-light m-r-10">Almacenar
+                                                        Receta del
+                                                        Medico </button>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="navpills-2" class="tab-pane ">
+                                    <div class="card-body">
+                                        <div class="table-responsive text-nowrap">
+                                            <table class="table table-striped">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col">Indicaciones</th>
+                                                        <th scope="col">Medicamento</th>
+                                                        <th scope="col">Cantidad</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <ng-container *ngFor="let indicacion of recibirindicaciones">
+                                                        <tr class="text-justify">
+                                                            <td [innerHTML]="indicacion.formingerir">
+                                                                {{indicacion.formingerir}}</td>
+                                                            <td>{{indicacion.medicamento}}</td>
+                                                            <td>{{indicacion.cantidad}}</td>
+                                                        </tr>
+                                                    </ng-container>
+                                                </tbody>
+                                            </table>
+
+                                        </div>
+                                        <div class="form-group" *ngIf="opcionesIndicaciones">
+                                            <a (click)="ExportarDatos()"
+                                                class="btn btn-success m-2 text-white">Exportar</a>
+                                            <a (click)="VaciarIndicaciones()"
+                                                class="btn btn-danger m-2 text-white">Vaciar Indicaciones</a>
+                                            <a (click)="AlmacenarIndicaciones()"
+                                                class="btn btn-info text-white">Almacenar Historia Clinica</a>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <a class="btn btn-dark text-white " (click)="modalRef.hide()">
+                            Regresar <i class="fa fa-sign-out"></i>
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- </form> -->
+</ng-template>

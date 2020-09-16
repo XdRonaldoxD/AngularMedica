@@ -1,0 +1,281 @@
+<div class="container-fluid">
+    <button class="btn  btn-success btn-flat  btn-sm mb-2 text-white" (click)="openModal(template)">
+        <i class="fa fa-user" aria-hidden="true"></i> Agregar Usuarios</button>
+    <div class="">
+
+    </div>
+    <div class="table-responsive" *ngIf="!cargando">
+        <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-hover"
+            style="width:100%">
+            <thead>
+                <tr style="vertical-align: middle;text-align: center;" class="text-uppercase">
+                    <th>Nombre y Apellidos</th>
+                    <th>Email</th>
+                    <th>DNI</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngFor="let e of data">
+                    <tr style="vertical-align: middle;text-align: center;">
+                        <td>{{e.nombre}} {{e.apellido}}</td>
+                        <td>{{e.email}}</td>
+                        <td>{{e.dni}}</td>
+                        <td>
+                            <div class="row text-center">
+                                <div class="col-md-3">
+                                    <button class="btn btn-warning btn-sm text-white" data-toggle="modal"
+                                        data-target=".bd-example-modal-lg" (click)="openModalEdit(Edittemplate,e.id)">
+                                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</button>
+                                </div>
+                                <div class="col-md-3">
+                                    <button class="btn  btn-danger btn-sm text-white ml-3" data-toggle="modal"
+                                        data-target=".bd-eliminar-modal-lg" (click)="EliminarDoctor(e.id,e.nombre)">
+                                        <i class="fa fa-times-circle mr-1" aria-hidden="true"></i>Eliminar</button>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-container>
+            </tbody>
+        </table>
+    </div>
+    <div class="row" *ngIf="cargando">
+        <div class="mx-auto">
+            <div class="loader">
+            </div>
+            <strong> Cargando...</strong>
+        </div>
+    </div>
+</div>
+<ng-template #template>
+    <form #registrarDoctor="ngForm" (ngSubmit)="EnviandoDoctor(registrarDoctor)">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title text-break">Nuevos Datos del Doctor o Farmaceutica</h4>
+                <button type="button" class="close" (click)="modalRef.hide()" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-6">
+                        <label for="" class="p-0 m-0">Nombre</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text" id="btnGroupAddon"><i class="fa fa-user-circle-o"
+                                        aria-hidden="true"></i></div>
+                            </div>
+                            <input type="text" name="nombreDoctor" #nombreDoctor="ngModel" [(ngModel)]="user.nombre"
+                                class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <label for="apellido" class="p-0 m-0">Apellidos</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text" id="btnGroupAddon"><i class="fa fa-user-circle"
+                                        aria-hidden="true"></i></div>
+                            </div>
+                            <input type="text" name="apellidoDoctor" #apellidoDoctor="ngModel"
+                                [(ngModel)]="user.apellido" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="" class="p-0 m-0">Correo Electronico </label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text" id="btnGroupAddon"><i class="fa fa-envelope-o"
+                                        aria-hidden="true"></i></div>
+                            </div>
+                            <input type="email" name="email" (change)="ValidarCorreo(user.email)" #email="ngModel"
+                                [(ngModel)]="user.email" class="form-control" required
+                                pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+                                [ngClass]="{'is-valid': email.valid,'is-invalid': !email.valid || submitted}">
+                            <small *ngIf="!email.valid && email.touched " class="invalid-feedback d-block">
+                                Ingrese correctamente el email
+                            </small>
+                            <small *ngIf="submitted" class="invalid-feedback d-block">
+                                El email ya existe
+                            </small>
+                        </div>
+
+                    </div>
+                    <div class="col-6">
+                        <label class="h6" class="p-0 m-0">DNI</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text" id="btnGroupAddon"><i class="fa fa-id-card"
+                                        aria-hidden="true"></i></div>
+                            </div>
+                            <input type="text" [minLength]='5' [maxlength]='8' name="DNI"
+                                (change)="ValidarDNI(user.dni)" #DNI="ngModel" [(ngModel)]="user.dni" pattern="[0-9]+"
+                                class="form-control " required
+                                [ngClass]="{'is-valid': DNI.valid,'is-invalid': !DNI.valid || dnivalido || dniExistente}">
+                            <small *ngIf="dnivalido" class="invalid-feedback d-block">
+                                El DNI no es valido
+                            </small>
+                            <small *ngIf="dniExistente" class="invalid-feedback d-block">
+                                El DNI ya esta registrado
+                            </small>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <label class="h6" class="p-0 m-0">Dirección</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text" id="btnGroupAddon"><i class="fa fa-address-card-o"
+                                        aria-hidden="true"></i></div>
+                            </div>
+                            <input type="text" name="direccionDoctor" #direccionDoctor [(ngModel)]="user.direccion"
+                                class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <label class="h6" class="p-0 m-0">Celular/Movil</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text" id="btnGroupAddon">
+                                    <i class="fa fa-mobile" aria-hidden="true"></i></div>
+                            </div>
+                            <input type="number" name="celularDoctor" #celularDoctor [(ngModel)]="user.celular"
+                                name="celular" maxlength="9" class="form-control" pattern="[0-9]+">
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <label class="h6" class="p-0 m-0">Contraseña</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text" id="btnGroupAddon">
+                                    <i class="fa fa-unlock-alt" aria-hidden="true"></i></div>
+                            </div>
+                            <input type="password" name="password" #password [(ngModel)]="user.password"
+                                class="form-control" min="1" max="99" required>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" (click)="modalRef.hide()">Close</button>
+                <button type="submit" class="btn btn-primary   GuardarDoc">Guardar Datos</button>
+            </div>
+        </div>
+    </form>
+</ng-template>
+
+<ng-template #Edittemplate>
+    <form #actulizarDoctor="ngForm" (ngSubmit)="EditarDoctores(actulizarDoctor)">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title text-break">Editar Datos del Doctor o Farmaceutica</h4>
+                <button type="button" class="close" (click)="modalRef.hide()" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- <input type="text" [hidden]="true" name="id_doctor" #id_doctor="ngModel" [(ngModel)]="user.id_doctor" > -->
+                <div class="row">
+                    <div class="col-6">
+                        <label for="" class="p-0 m-0">Nombre</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text" id="btnGroupAddon"><i class="fa fa-user-circle-o"
+                                        aria-hidden="true"></i></div>
+                            </div>
+                            <input type="text" name="nombreDoctor" #nombreDoctor="ngModel" [(ngModel)]="user.nombre"
+                                class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <label for="apellido" class="p-0 m-0">Apellidos</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text" id="btnGroupAddon"><i class="fa fa-user-circle"
+                                        aria-hidden="true"></i></div>
+                            </div>
+                            <input type="text" name="apellidoDoctor" #apellidoDoctor="ngModel"
+                                [(ngModel)]="user.apellido" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="" class="p-0 m-0">Correo Electronico </label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text" id="btnGroupAddon"><i class="fa fa-envelope-o"
+                                        aria-hidden="true"></i></div>
+                            </div>
+                            <input type="email" name="email" (change)="ValidarCorreo(user.email)" #email="ngModel"
+                                [(ngModel)]="user.email" class="form-control" required
+                                pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+                                [ngClass]="{'is-valid': email.valid,'is-invalid': !email.valid || submitted}">
+                            <small *ngIf="!email.valid && email.touched " class="invalid-feedback d-block">
+                                Ingrese correctamente el email
+                            </small>
+                            <small *ngIf="submitted" class="invalid-feedback d-block">
+                                El email ya existe
+                            </small>
+                        </div>
+
+                    </div>
+                    <div class="col-6">
+                        <label class="h6" class="p-0 m-0">DNI</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text" id="btnGroupAddon"><i class="fa fa-id-card"
+                                        aria-hidden="true"></i></div>
+                            </div>
+                            <input type="text" [disabled]="true" name="DNI" (change)="ValidarDNI(user.dni)"
+                                #DNI="ngModel" [(ngModel)]="user.dni" [minLength]="5" [maxLength]="8" pattern="[0-9]+"
+                                class="form-control " required>
+                            <small *ngIf="dnivalido" class="invalid-feedback d-block">
+                                El DNI no es valido
+                            </small>
+                            <small *ngIf="dniExistente" class="invalid-feedback d-block">
+                                El DNI ya esta registrado
+                            </small>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <label class="h6" class="p-0 m-0">Dirección</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text" id="btnGroupAddon"><i class="fa fa-address-card-o"
+                                        aria-hidden="true"></i></div>
+                            </div>
+                            <input type="text" name="direccionDoctor" #direccionDoctor [(ngModel)]="user.direccion"
+                                class="form-control" min="1" max="99" required>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <label class="h6" class="p-0 m-0">Celular/Movil</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text" id="btnGroupAddon">
+                                    <i class="fa fa-mobile" aria-hidden="true"></i></div>
+                            </div>
+                            <input type="number" name="celularDoctor" #celularDoctor [(ngModel)]="user.celular"
+                                name="celular" maxlength="9" class="form-control" pattern="[0-9]+">
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <label class="h6" class="p-0 m-0">Nueva Contraseña</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text" id="btnGroupAddon">
+                                    <i class="fa fa-unlock-alt" aria-hidden="true"></i></div>
+                            </div>
+                            <input type="password" name="password" #password [(ngModel)]="user.password"
+                                class="form-control" min="1" max="99" required>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" (click)="modalRef.hide()">Close</button>
+                <button type="submit" class="btn btn-primary   GuardarDoc">Guardar Datos</button>
+            </div>
+        </div>
+    </form>
+</ng-template>
