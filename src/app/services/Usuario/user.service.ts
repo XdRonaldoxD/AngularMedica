@@ -39,6 +39,16 @@ export class UserService {
     return this.httpcliente.post(this.linkApi+'login',params,{headers:headers})
   }
 
+  cerrarSession(id_user):Observable<any>{
+    let json=JSON.stringify(id_user);
+    let params='json='+json;
+    let headers=new HttpHeaders().set('Content-Type','application/x-www-form-urlencoded');
+
+    return this.httpcliente.post(this.linkApi+'EliminarSession',params,{headers:headers})
+  }
+
+  
+
   getIdentity(){
     let identity=JSON.parse(localStorage.getItem('UserIdentificado'));
     if (identity && identity!='undefined') {

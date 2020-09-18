@@ -4,21 +4,21 @@
             <div class="login100-pic js-tilt" data-tilt>
                 <img src="../../assets/images/medical-emergencies.gif" alt="">
             </div>
-            <form class="login100-form validate-form"   #loginForm="ngForm" (ngSubmit)="Ingresar(loginForm)">
+            <form class="login100-form validate-form" #loginForm="ngForm" (ngSubmit)="Ingresar(loginForm,template)">
                 <span class="login100-form-title">
-                     Iniciar Sessión
+                    Iniciar Sessión
                 </span>
-                <div class="wrap-input100 validate-input" >
-                    <input class="input100"  #email="ngModel" [(ngModel)]="user.email" type="email" name="email"
-                     placeholder="Ingresar Email">
+                <div class="wrap-input100 validate-input">
+                    <input class="input100" #email="ngModel" [(ngModel)]="user.email" type="email" name="email"
+                        placeholder="Ingresar Email">
                     <span class="focus-input100"></span>
                     <span class="symbol-input100">
                         <i class="fa fa-envelope" aria-hidden="true"></i>
                     </span>
                 </div>
-                <div class="wrap-input100 validate-input" >
+                <div class="wrap-input100 validate-input">
                     <input class="input100" type="password" name="pass" #pass="ngModel" [(ngModel)]="user.password"
-                     placeholder="Ingresar Contraseña">
+                        placeholder="Ingresar Contraseña">
                     <span class="focus-input100"></span>
                     <span class="symbol-input100">
                         <i class="fa fa-lock" aria-hidden="true"></i>
@@ -30,9 +30,81 @@
                     </button>
                 </div>
             </form>
-       
-           
+
+
         </div>
     </div>
 </div>
 
+<ng-template #template>
+    <form #registrarDoctor="ngForm" (ngSubmit)="CerrandoSession()">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title text-break text-uppercase text-center">Usuario de Sesión Activado</h4>
+                <button type="button" class="close" (click)="modalRef.hide()" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12  d-flex align-self-center justify-content-center">
+                        <svg class="w-25" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
+                            xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512 512"
+                            style="enable-background:new 0 0 512 512;" xml:space="preserve">
+                            <linearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="256" y1="514" x2="256"
+                                y2="2" gradientTransform="matrix(1 0 0 -1 0 514)">
+                                <stop offset="0" style="stop-color:#2AF598" />
+                                <stop offset="1" style="stop-color:#009EFD" />
+                            </linearGradient>
+                            <path style="fill:url(#SVGID_1_);" d="M512,60v392c0,33.084-26.916,60-60,60H60c-33.084,0-60-26.916-60-60v-80h40v80
+                        c0,11.028,8.972,20,20,20h392c11.028,0,20-8.972,20-20V60c0-11.028-8.972-20-20-20H60c-11.028,0-20,8.972-20,20v80H0V60
+                        C0,26.916,26.916,0,60,0h392C485.084,0,512,26.916,512,60z M211.716,352L240,380.284L364.284,256L240,131.716L211.716,160l76,76H0
+                        v40h287.716L211.716,352z" />
+                            <g>
+                            </g>
+                            <g>
+                            </g>
+                            <g>
+                            </g>
+                            <g>
+                            </g>
+                            <g>
+                            </g>
+                            <g>
+                            </g>
+                            <g>
+                            </g>
+                            <g>
+                            </g>
+                            <g>
+                            </g>
+                            <g>
+                            </g>
+                            <g>
+                            </g>
+                            <g>
+                            </g>
+                            <g>
+                            </g>
+                            <g>
+                            </g>
+                            <g>
+                            </g>
+                        </svg>
+                      
+                    </div>
+                    <div class="col-md-12 text-center mt-1 mb-0 p-0">
+                        <p class="text-uppercase">¿Seguro de cerrar su sesión Activado?</p>
+                    </div>
+
+
+                </div>
+
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" (click)="modalRef.hide()">Close</button>
+                <button type="submit" class="btn btn-primary  ">Cerrar Sessión</button>
+            </div>
+        </div>
+    </form>
+</ng-template>
