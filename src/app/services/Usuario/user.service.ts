@@ -28,16 +28,26 @@ export class UserService {
      return this.httpcliente.post(this.linkApi+'registrado',params,{headers:headers})
    }
 
-   login(user,getToken=null):Observable<any>{
-     if (getToken !=null) {
-         user.getToken='true'
-     }
-    let json=JSON.stringify(user);
+   VerificacionUser(token,user_id):Observable<any>{
+    let json=JSON.stringify(user_id);
     let params='json='+json;
-    let headers=new HttpHeaders().set('Content-Type','application/x-www-form-urlencoded');
+    let headers=new HttpHeaders().
+    set('Content-Type','application/x-www-form-urlencoded')
+    .set('Authorization',token);
 
-    return this.httpcliente.post(this.linkApi+'login',params,{headers:headers})
+    return this.httpcliente.post(this.linkApi+'ConsultarUsuario',params,{headers:headers})
   }
+
+  login(user,getToken=null):Observable<any>{
+    if (getToken !=null) {
+        user.getToken='true'
+    }
+   let json=JSON.stringify(user);
+   let params='json='+json;
+   let headers=new HttpHeaders().set('Content-Type','application/x-www-form-urlencoded');
+
+   return this.httpcliente.post(this.linkApi+'login',params,{headers:headers})
+ }
 
   cerrarSession(id_user):Observable<any>{
     let json=JSON.stringify(id_user);

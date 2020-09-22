@@ -85,7 +85,7 @@ export class LoginComponent implements OnInit {
     );
   }
   CerrandoSession(){
-    console.log(this.user.id);
+    // console.log(this.user.id);
     this._userServicio.cerrarSession(this.user.id)
     .subscribe(respo=>{
       // console.log(respo);

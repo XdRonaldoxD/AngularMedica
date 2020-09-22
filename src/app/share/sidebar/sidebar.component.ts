@@ -35,6 +35,11 @@ export class SidebarComponent implements OnInit {
     this._activateRoute.params.subscribe(params=>{
       let logout=+params['sure'];
       if (logout==1) {
+        this._userServicie.cerrarSession(this.identity.sub).subscribe(
+          respo=>{
+            console.log(respo);
+          }
+        );
         localStorage.removeItem('UserIdentificado');
         localStorage.removeItem('token');
 
