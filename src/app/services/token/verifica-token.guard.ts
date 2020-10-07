@@ -17,6 +17,7 @@ export class VerificaTokenGuard implements CanActivate {
   canActivate(): Promise<boolean> | boolean {
     // console.log("Iniciando Guard Token");
     let token = this._userServicio.getToken();
+    let identity = this._userServicio.getIdentity();
     if (token != null) {
       let payload = JSON.parse(atob(token.split(".")[1]));
       let expirado = this.expirado(payload.expiracion);
@@ -24,7 +25,7 @@ export class VerificaTokenGuard implements CanActivate {
         this._route.navigate(["/login"]);
         // console.log("expiro necesita renovar el token");
       }
-      this._userServicio.VerificacionUser(token,payload.sub)
+      this._userServicio.VerificacionUser(token,payload.sub,identity.session_id)
         .subscribe((respo) => {
           if (respo==true) {
             localStorage.removeItem("UserIdentificado");

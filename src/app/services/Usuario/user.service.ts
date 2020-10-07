@@ -28,9 +28,10 @@ export class UserService {
      return this.httpcliente.post(this.linkApi+'registrado',params,{headers:headers})
    }
 
-   VerificacionUser(token,user_id):Observable<any>{
+   VerificacionUser(token,user_id,session_id):Observable<any>{
     let json=JSON.stringify(user_id);
-    let params='json='+json;
+    let session=JSON.stringify(session_id);
+    let params='json='+json+"/"+session;
     let headers=new HttpHeaders().
     set('Content-Type','application/x-www-form-urlencoded')
     .set('Authorization',token);
