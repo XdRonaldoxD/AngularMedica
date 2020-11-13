@@ -116,4 +116,15 @@ export class HistoriapacienteService {
     return this.httpcliente.post(this.linkApi+'AlmacenarPaciente',params,{headers:headers})
   }
 
+  TraerDatosGraficos(token,datos):Observable<any>{
+    let params=new FormData();
+    params.append('fechaIncio',datos.fechaIncio)
+    params.append('FechaFin',datos.FechaFin)
+    const headers = new Headers({
+      Authorization:token
+    });
+
+    return this.http.post(this.linkApi+'listado/Paciente',params,{headers})
+  }
+
 }

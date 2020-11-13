@@ -19,11 +19,11 @@ export class SidebarService {
           url: "/HistoriaMedica",
           icono:"fa fa-address-card",
         },  
-        // {
-        //   titulo: "Historia del Paciente",
-        //   url: "/HistorialPaciente",
-        //   icono:"fa fa-file-text-o",
-        // },
+        {
+          titulo: "Grafico",
+          url: "/GraficaMedico",
+          icono:"fa fa-file-text-o",
+        },
         // {
         //   titulo: "Historia del Paciente",
         //   url: "/HistoriaPaciente",

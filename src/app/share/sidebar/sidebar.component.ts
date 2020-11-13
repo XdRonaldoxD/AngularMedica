@@ -51,17 +51,20 @@ export class SidebarComponent implements OnInit {
   validandoSidebar(){
     // console.log(this.identity);
     var titulos= this._sidebar.menu[0].submenu;
+ 
     if (this.identity.tipo_usuario=="ROLE_DOCTOR") {
       this.submenus = [];
       titulos.forEach((element,index) => {
-        if (index==1) {
+        if (index==1 || index==2) {
           this.submenus.push(element);
         }
       });
     }else{
     this.submenus=titulos;
     }
+    console.log(this.submenus);
   }
+  
 
   verificarToken(){
     

@@ -148,4 +148,6 @@ export class UserService {
 
     return this.httpcliente.get(this.linkApi+'GetDoctorId/'+id,{headers:headers})
   }
+
+
 }

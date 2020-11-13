@@ -25,9 +25,15 @@ import { empty } from 'rxjs';
 export class RegistrarpacienteComponent implements OnInit, AfterViewInit {
 
   name = 'ng2-ckeditor';
-  ckeConfig: any;
   indicacionDoctor:string;
-
+public ckeConfig = {
+		toolbar: [
+			[ 'Source' ],
+			[ 'Styles', 'Format', 'Font', 'FontSize' ],
+			[ 'Bold', 'Italic' ],
+			[ 'Undo', 'Redo' ]
+		]
+	}
 
 
   submitted = false;
@@ -46,6 +52,7 @@ export class RegistrarpacienteComponent implements OnInit, AfterViewInit {
   now: Date = new Date();
   nuevaCita: Date = new Date();
   fecha: any = this.datePipe.transform(new Date(), "yyyy-MM-dd HH:mm");
+  fechaActual: any = this.datePipe.transform(new Date(), "yyyy-MM-dd");
   proximaCita: any = this.datePipe.transform(new Date(), "yyyy-MM-dd HH:mm");
 
   identity: any;
@@ -90,7 +97,7 @@ export class RegistrarpacienteComponent implements OnInit, AfterViewInit {
       "",
       "",
       "",
-      "",
+      this.fechaActual,
       "",
       "",
       "",
@@ -259,6 +266,7 @@ export class RegistrarpacienteComponent implements OnInit, AfterViewInit {
   Diagnostico(dato) {
     console.log(dato);
     if(dato.length>1){
+      this.diagnosticado='';
       let Diag = this.traerDiagnostico();
       Diag.push(dato);
       localStorage.setItem("Diagnostico", JSON.stringify(Diag));
@@ -267,7 +275,6 @@ export class RegistrarpacienteComponent implements OnInit, AfterViewInit {
       lista.innerHTML = "";
       this.mostraandoDiagnostico();
     }else{
-      console.log("vacio");
       Swal.fire({
         toast: true,
         position: "top-end",

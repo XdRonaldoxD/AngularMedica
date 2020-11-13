@@ -17,6 +17,7 @@ import { BsModalRef, BsModalService } from "ngx-bootstrap/modal";
 import { Paciente } from "../../models/paciente";
 
 import * as html2pdf from "html2pdf.js";
+import * as fileSaver from "file-saver";
 
 @Component({
   selector: "app-progress",
@@ -42,7 +43,7 @@ export class ProgressComponent implements OnDestroy, OnInit {
   data: any;
   diagnosticado: any;
   Tratamientos: any;
-  fecha_creacion:any;
+  fecha_creacion: any;
   constructor(
     public _userServicie: UserService,
     private _route: Router,
@@ -104,23 +105,23 @@ export class ProgressComponent implements OnDestroy, OnInit {
     this.dtTrigger.unsubscribe();
   }
 
-  onExportPdf(){
+  onExportPdf() {
     console.log("click");
-    const options={
-      width:[100],
-      height:[100],
-      filename:"archivo.pdf",
-      img:{type: 'jpeg', quality: 1},
-      html2Canvas:{scale: 3,
-        letterRendering: true,
-        useCORS: true},
-      jsPDF:{unit: 'mm',format: 'a4',orientation:'portrait',pagesplit: true}
+    const options = {
+      width: [100],
+      height: [100],
+      filename: "archivo.pdf",
+      img: { type: "jpeg", quality: 1 },
+      html2Canvas: { scale: 3, letterRendering: true, useCORS: true },
+      jsPDF: {
+        unit: "mm",
+        format: "a4",
+        orientation: "portrait",
+        pagesplit: true,
+      },
     };
-    const contennido:Element=document.getElementById('element-to-export');
-    html2pdf()
-    .from(contennido)
-    .set(options)
-    .save();
+    const contennido: Element = document.getElementById("element-to-export");
+    html2pdf().from(contennido).set(options).save();
   }
 
   listarPaciente() {
@@ -209,15 +210,46 @@ export class ProgressComponent implements OnDestroy, OnInit {
     this.MostrarPaciente(id_paciente);
   }
 
-    //HABRIENDO EL MODAL REPORTES
-    openReporte(reportes: TemplateRef<any>, id_paciente) {
-      //Modal Estatico
-      this.modalRef = this.modalService.show(reportes, {
-        class: "modal-lg",
-        backdrop: "static",
-      });
-      this.MostrarPaciente(id_paciente);
-    }
+  public pending: boolean = false;
+  openReporte(id_paciente) {
+    Swal.fire({
+      title: 'FICHA DEL PACIENTE',
+      html: 'Generando el reporte del Paciente...',
+      text: 'Generando el reporte del Paciente...',
+      allowOutsideClick: false,
+      showConfirmButton: false,
+      onOpen: () => {
+        Swal.showLoading();
+        let self = this;
+        this.pending = true;
+        let xhr = new XMLHttpRequest();
+        let url = `${this.ReportePdf + id_paciente}?lang=en`;
+        xhr.open("GET", url, true);
+        xhr.responseType = "blob";
+        xhr.onreadystatechange = function () {
+          setTimeout(() => {
+          }, 0);
+          if (xhr.readyState === 4 && xhr.status === 200) {
+            var blob = new Blob([this.response], { type: "application/pdf" });
+            fileSaver.saveAs(blob, "Historia del Paciente.pdf");
+            Swal.close();
+          }
+        };
+        xhr.send();
+      }
+  })
+  }
+
+  // downloadFile() {
+  //   this.http.get(
+  //     'https://mapapi.apispark.net/v1/images/'+this.filename).subscribe(
+  //       (response) => {
+  //         var mediaType = 'application/pdf';
+  //         var blob = new Blob([response._body], {type: mediaType});
+  //         var filename = 'test.pdf';
+  //         fileSaver.saveAs(blob, filename);
+  //       });
+  //   }
 
   //MOSTRANDO INFORMACION DEL PACIENTE
   MostrarPaciente(id_paciente) {
@@ -226,8 +258,8 @@ export class ProgressComponent implements OnDestroy, OnInit {
       .subscribe((datos) => {
         console.log(datos);
         this.paciente.NumeroCitaMedica = datos.nCitamed;
-       this.fecha_creacion=datos.fecha_creacion;;
- 
+        this.fecha_creacion = datos.fecha_creacion;
+
         if (datos.img_perfil != null) {
           this.paciente.Imagen = datos.img_perfil;
         } else {
@@ -252,102 +284,100 @@ export class ProgressComponent implements OnDestroy, OnInit {
         }
         if (datos.whatsapp != null) {
           this.paciente.Whatsapp = datos.whatsapp;
-        }else{
-          this.paciente.Whatsapp =null;
+        } else {
+          this.paciente.Whatsapp = null;
         }
         if (datos.email != null) {
           this.paciente.Correo = datos.email;
-        }else{
+        } else {
           this.paciente.Correo = null;
-
         }
         if (datos.facebook != null) {
           this.paciente.NombreFacebook = datos.facebook;
-        }else{
-          this.paciente.NombreFacebook=null;
+        } else {
+          this.paciente.NombreFacebook = null;
         }
         if (datos.contactoCentroM != null) {
           this.paciente.Formacontactar = datos.contactoCentroM;
-        }else{
+        } else {
           this.paciente.Formacontactar = null;
         }
 
         if (datos.motivoCons != null) {
           this.paciente.MotivoConsulta = datos.motivoCons;
-        }else{
+        } else {
           this.paciente.MotivoConsulta = null;
         }
         if (datos.GP != null) {
           this.paciente.GP = datos.GP;
-        }else{
+        } else {
           this.paciente.GP = null;
         }
         if (datos.FUR != null) {
           this.paciente.FUR = datos.FUR;
-        }else{
+        } else {
           this.paciente.FUR = null;
         }
         if (datos.PAP != null) {
           this.paciente.PAP = datos.PAP;
-        }else{
+        } else {
           this.paciente.PAP = null;
         }
         if (datos.MAC != null) {
           this.paciente.MAC = datos.MAC;
-        }else{
+        } else {
           this.paciente.MAC = null;
         }
         if (datos.RAM != null) {
           this.paciente.RAM = datos.RAM;
-        }else{
+        } else {
           this.paciente.RAM = null;
         }
         if (datos.antecedenteP != null) {
           this.paciente.AntecendesPersonales = datos.antecedenteP;
-        }else{
+        } else {
           this.paciente.AntecendesPersonales = null;
         }
         if (datos.antecedenteF != null) {
           this.paciente.AntecendesFamiliares = datos.antecedenteF;
-        }else{
+        } else {
           this.paciente.AntecendesFamiliares = null;
         }
         if (datos.pa != null) {
           this.paciente.PA = datos.pa;
-        }else{
+        } else {
           this.paciente.PA = null;
         }
         if (datos.t != null) {
           this.paciente.T = datos.t;
-        }else{
+        } else {
           this.paciente.T = null;
         }
         if (datos.fc != null) {
           this.paciente.FC = datos.fc;
-        }else{
+        } else {
           this.paciente.FC = null;
         }
         if (datos.fr != null) {
           this.paciente.FR = datos.fr;
-        }else{
+        } else {
           this.paciente.FR = null;
         }
         if (datos.peso != null) {
           this.paciente.Peso = datos.peso;
-        }else{
+        } else {
           this.paciente.Peso = null;
-
         }
         if (datos.talla != null) {
           this.paciente.Talla = datos.talla;
-        }else{
+        } else {
           this.paciente.Talla = null;
         }
 
         if (datos.Comentclinico != null) {
           this.paciente.ComentarioExamenClinico = datos.Comentclinico;
-        }else{
-          this.paciente.ComentarioExamenClinico=null;
+        } else {
+          this.paciente.ComentarioExamenClinico = null;
         }
         if (datos.DocLaboratorio != null) {
           this.paciente.documentoLabotario = datos.DocLaboratorio;
@@ -356,13 +386,13 @@ export class ProgressComponent implements OnDestroy, OnInit {
         }
         if (datos.imageneologia != null) {
           this.paciente.imageneologia = datos.imageneologia;
-        }else{
+        } else {
           this.paciente.imageneologia = null;
         }
         if (datos.pcita != null) {
           this.paciente.proximacita = datos.pcita;
-        }else{
-          this.paciente.proximacita=null;
+        } else {
+          this.paciente.proximacita = null;
         }
 
         if (datos.diagnostico[0] == "") {
@@ -378,14 +408,16 @@ export class ProgressComponent implements OnDestroy, OnInit {
         } else {
           this.Tratamientos = null;
         }
-        
       });
   }
 
   //Almacenar informacion del Pacinete
-  AlmacenarDatoPaciente(nombre_paciente,id_paciente) {
+  AlmacenarDatoPaciente(nombre_paciente, id_paciente) {
     Swal.fire({
-      title: "¿Esta seguro de almacenar los datos del paciente " + nombre_paciente + "?",
+      title:
+        "¿Esta seguro de almacenar los datos del paciente " +
+        nombre_paciente +
+        "?",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
@@ -394,18 +426,15 @@ export class ProgressComponent implements OnDestroy, OnInit {
     }).then((result) => {
       if (result.value) {
         this._HistoriaPaciente
-        .AlmacenarDatoPaciente(this.token,id_paciente)
-        .subscribe((datos)=>{
-         if(datos=='ok'){
-          Swal.fire("Almacenado", "Paciente Almacenado", "success");
-         }else{
-          Swal.fire("Error", "No se Almaceno el Paciente ", "error");
-         }
-       
-        })
-        
+          .AlmacenarDatoPaciente(this.token, id_paciente)
+          .subscribe((datos) => {
+            if (datos == "ok") {
+              Swal.fire("Almacenado", "Paciente Almacenado", "success");
+            } else {
+              Swal.fire("Error", "No se Almaceno el Paciente ", "error");
+            }
+          });
       }
     });
-  
   }
 }

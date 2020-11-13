@@ -9517,7 +9517,7 @@ html {
   line-height: calc(1.8125rem + 2px);
 }
 label:not(.form-check-label):not(.custom-file-label) {
-  font-weight: 700;
+  font-weight: 600;
 }
 .progress {
   box-shadow: none;

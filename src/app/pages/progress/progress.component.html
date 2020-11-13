@@ -38,7 +38,7 @@
 
  
                                         <button class="btn btn-dark btn-sm text-white ml-1" data-toggle="modal"
-                                        data-target=".bd-eliminar-modal-lg"(click)="openReporte(reportes,e.id)" tooltip="Exportar Historia">
+                                        data-target=".bd-eliminar-modal-lg"(click)="openReporte(e.id)" tooltip="Exportar Historia">
                                         <i class="fa fa-file-pdf-o mr-1"  aria-hidden="true"></i></button>
         
                                         <button class="btn  btn-danger btn-sm text-white ml-1 " data-toggle="modal"
@@ -140,7 +140,7 @@
                                                     <div class="input-group">
                                                             <div class="input-group-text" id="btnGroupAddon"><i class="fa fa-address-book-o"
                                                                     aria-hidden="true"></i></div>
-                                                       <p class="parrafo">{{paciente.Edad}}</p>
+                                                       <p class="parrafo">{{paciente.Edad}} años</p>
                                                     </div>
                                                 </div>
                                                 <div class="col-6">
@@ -412,9 +412,9 @@
         </ng-template>
 
         
-        <ng-template #reportes>
+        <!-- <ng-template #reportes> -->
             <!-- <form  #registrarDoctor="ngForm" (ngSubmit)="EnviandoDoctor(registrarDoctor)"> -->
-            <div class="row">
+            <!-- <div class="row">
                 <div class="col-md-12">
                     <div class="card">
                         <div class="modal-body p-0 m-0">
@@ -726,7 +726,7 @@
                 
                     </div>
                 </div>
-            </div>
+            </div> -->
             <!-- </form> -->
-        </ng-template>
+        <!-- </ng-template> -->
     

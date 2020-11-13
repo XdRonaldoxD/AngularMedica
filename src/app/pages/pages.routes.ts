@@ -22,7 +22,7 @@ const pagesRoutes : Routes =[
          canActivate:[VerificaTokenGuard]
         },
       { path: "HistoriaMedica", component: ProgressComponent,canActivate:[VerificaTokenGuard] },
-      { path: "HistoriaPaciente", component: Graficas1Component ,canActivate:[VerificaTokenGuard]},
+      { path: "GraficaMedico", component: Graficas1Component ,canActivate:[VerificaTokenGuard]},
       { path: "Doctores", component: AccoutSettingComponent ,canActivate:[VerificaTokenGuard]},
       { path: "HistoriaMedica/:Paciente", component: ProgressComponent ,canActivate:[VerificaTokenGuard]},
       { path: "RegistrarPaciente", component: RegistrarpacienteComponent,canActivate:[VerificaTokenGuard] },

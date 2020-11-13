@@ -8,6 +8,7 @@ import { Subject } from "rxjs";
 import { DataTableDirective } from "angular-datatables";
 import { DocumentoLaboratorio } from "src/app/services/documentoLaboratorio/Documento.service";
 import Swal from "sweetalert2";
+import * as fileSaver from "file-saver";
 @Component({
   selector: "app-historia-paciente",
   templateUrl: "./historia-paciente.component.html",
@@ -107,20 +108,46 @@ export class HistoriaPacienteComponent implements OnDestroy, OnInit {
       }
     });
   }
+  public pending: boolean = false;
   ExportarDato(id){
-    let a = document.createElement("a");
-    a.target = "_blank";
-    a.setAttribute("visibility", "hidden");
-    a.href = this.ReportePdf +"HistoriaClinica/" + id;
-    a.click();
+    Swal.fire({
+      title: 'GENERANDO HISTORIA CLINICA COMPLETA DEL PACIENTE',
+      html: 'Generando...',
+      text: 'Generando...',
+      allowOutsideClick: false,
+      showConfirmButton: false,
+      onOpen: () => {
+        Swal.showLoading();
+        let self = this;
+        this.pending = true;
+        let xhr = new XMLHttpRequest();
+        let url = `${this.ReportePdf + 'HistoriaClinica/'+ id}?lang=en`;
+        xhr.open("GET", url, true);
+        xhr.responseType = "blob";
+        xhr.onreadystatechange = function () {
+          setTimeout(() => {
+          }, 0);
+          if (xhr.readyState === 4 && xhr.status === 200) {
+            var blob = new Blob([this.response], { type: "application/pdf" });
+            fileSaver.saveAs(blob, "Historia del Paciente.pdf");
+            Swal.close();
+          }
+        };
+        xhr.send();
+      }
+  })
 
   }
   VisualizarDocumento(){
-    let a = document.createElement("a");
-    a.target = "_blank";
-    a.setAttribute("visibility", "hidden");
-    a.href = "http://sangeronimohistoriaclinica.com/pdf-viewer-master/external/pdfjs-2.1.266-dist/web/vista.html" ;
-    a.click();
+    // let a = document.createElement("a");
+    // a.target = "_blank";
+    // a.setAttribute("visibility", "hidden");
+    // a.href = "http://sangeronimohistoriaclinica.com/pdf-viewer-master/external/pdfjs-2.1.266-dist/web/vista.html" ;
+    // a.click();
+     let visualizador=document.querySelector("#VisualizacionPdf");
+     let Documento=document.querySelector("#DocumentoAlmacenado");
+     visualizador.classList.remove("d-none");
+     Documento.classList.add("d-none");
 
   }
   

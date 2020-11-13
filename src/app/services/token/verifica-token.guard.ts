@@ -28,6 +28,7 @@ export class VerificaTokenGuard implements CanActivate {
       this._userServicio.VerificacionUser(token,payload.sub,identity.session_id)
         .subscribe((respo) => {
           if (respo==true) {
+            // this._userServicio.cerrarSession(identity.sub);
             localStorage.removeItem("UserIdentificado");
             localStorage.removeItem("token");
             this._route.navigate(["/login"]);
