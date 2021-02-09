@@ -37,8 +37,12 @@ import { HistoriaPacienteComponent } from './historia-paciente/historia-paciente
 
 import { QuillComponent } from './quill/quill.component';
 import { CKEditorModule } from 'ng2-ckeditor';
-
-
+import { EnviarMensajeComponent } from './enviar-mensaje/enviar-mensaje.component';
+import { NgxDropzoneModule } from 'ngx-dropzone';
+import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
+//PIPÉ MODULE
+import { PipesModule } from '../pipes/pipes.module';
+import { PerfilComponent } from './perfil/perfil.component';
 
 
 
@@ -54,7 +58,9 @@ import { CKEditorModule } from 'ng2-ckeditor';
     GraficaDonaComponent,
     AccoutSettingComponent,
     HistoriaPacienteComponent,
-    QuillComponent
+    QuillComponent,
+    EnviarMensajeComponent,
+    PerfilComponent
     ],
     exports:[
         //ESTAS PAGINAS SERAN USADAS POR OTRO CONPONENTE FUERA DE ESTE MODULO
@@ -63,6 +69,9 @@ import { CKEditorModule } from 'ng2-ckeditor';
         Graficas1Component
     ],
     imports:[
+        PipesModule,
+        NgxExtendedPdfViewerModule,
+        NgxDropzoneModule,
         CKEditorModule,
         BrowserModule,
         SharedModule,

@@ -16,6 +16,7 @@
       </div>
      
     </a>
+    
 
     <!-- Sidebar -->
     <div class="sidebar">
@@ -23,11 +24,12 @@
       <div class="user-panel mt-3 d-flex">
         <div class="row">
           <div class="col-md-1">
-              <img src="assets/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
+              <img [src]="identity.imagen | imagen:identity.tipo_usuario" class="img-circle elevation-2" alt="User Image">
           </div>
           <div class="col-md-2">
             <div class="info">
-              <p  class="d-block text-white">{{identity.nombre }}</p>
+              <p  class="d-block text-white">{{ identity.nombre }}</p>
+
             </div>
           </div>
         </div>
@@ -41,7 +43,7 @@
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
           <li class="nav-item has-treeview menu-open" *ngFor="let menu of _sidebar.menu ">
-            <a href="#" class="nav-link active">
+            <a  class="nav-link active">
               <i class="{{menu.icono}} img-size-32 text-white" aria-hidden="true" style="font-size: 20px;"></i>
               <p>
                 <strong class="text-white">{{menu.titulo}}</strong> 
@@ -52,16 +54,17 @@
               <li class="nav-item">
                 <a routerLinkActive="active"  routerLink="{{submenu.url}}" class="nav-link ">
                   <i class="{{submenu.icono}}  img-size-32" aria-hidden="true"></i>
-                  <p class="">{{submenu.titulo}}</p>
+                  <p class="text-white">{{submenu.titulo}}</p>
                 </a>
               </li>
             </ul>
           </li>
+          <hr class="hr">
           <li class="nav-header">SALIR</li>
           <li class="nav-item">
             <a [routerLink]="['/logout/1']" class="nav-link">
               <i class="fa fa-sign-out  img-size-32" aria-hidden="true"></i>
-              <p class="text">Cerrar Session</p>
+              <p class="text-white">Cerrar Session</p>
             </a>
           </li>
        

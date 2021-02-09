@@ -8,3 +8,49 @@
     font-size: 14px !important;
     margin-left: 10px !important;
 }
+/*
+   server-side-angular-way.component.css
+*/
+.no-data-available {
+    text-align: center;
+  }
+  
+  /*
+     src/styles.css (i.e. your global style)
+  */
+  .dataTables_empty {
+    display: none;
+  }
+
+  .nav-tabs {
+    display:none;
+}
+
+@media(min-width:768px) {
+    .nav-tabs {
+      display: flex;
+    }
+
+    .card {
+      border: none;
+    }
+
+    .card .card-header {
+      display:none;
+    }  
+
+    .card .collapse{
+      display:block;
+    }
+}
+
+@media(max-width:767px){
+    .tab-pane {
+      display: block !important;
+      opacity: 1;
+    }
+}
+
+::ng-deep table.dataTable td.dataTables_empty {
+  display: none;
+}

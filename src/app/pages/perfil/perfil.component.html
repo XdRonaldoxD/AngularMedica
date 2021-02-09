@@ -1,0 +1,89 @@
+<div class="container">
+
+    <div class="">
+        <div class=" border-0">
+            <h1 class="text-uppercase">perfil de usuario</h1>
+        </div>
+    </div>
+    <div class="card-body card shadow">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-6">
+                    <h4 class="card-title"> Perfil del Usuario</h4>
+                    <form #perfilUsuario="ngForm" (ngSubmit)="EnviarPerfil(perfilUsuario)"  enctype="multipart/form-data" >
+                        <div class="col-md-12">
+                            <label class="box-title text-success m-0">Nombres de usuario </label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text" id="btnGroupAddon">
+                                        <i class="fa fa-user-circle" aria-hidden="true"></i></div>
+                                </div>
+                                <input type="text" name="nombreusuario" #nombreusuario="ngModel" [(ngModel)]="perfil.nombre_usuario"
+                                    [ngClass]="{'is-valid': nombreusuario.valid,'is-invalid': !nombreusuario.valid && validado}"
+                                    class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="box-title text-success m-0">Apellidos de usuario </label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text" id="btnGroupAddon">
+                                        <i class="fa fa-user-circle" aria-hidden="true"></i></div>
+                                </div>
+                                <input type="text" name="apellido_usuario" #apellido_usuario="ngModel" [(ngModel)]="perfil.apellido_usuario"
+                                    [ngClass]="{'is-valid': apellido_usuario.valid,'is-invalid': !apellido_usuario.valid && validado }"
+                                    class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="box-title text-success m-0">Correo de usuario </label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text" id="btnGroupAddon">
+                                        <i class="fa fa-envelope-o"
+                                        aria-hidden="true"></i></div>
+                                </div>
+                                <input type="email" name="correo_usuario" #correousuario="ngModel" readonly [(ngModel)]="perfil.correo_usuario"
+                                    class="form-control" >
+                            </div>
+                        </div>
+                        <div class="col-12 mt-3">
+                            <div class="form-group " >
+                                <button type="submit" class="btn btn-success">
+                                    <span><i class="fa fa-floppy-o" aria-hidden="true"></i>
+                                    </span> Guardar</button>
+                            </div>
+                        </div>
+                        
+                     
+                    </form>
+                </div>
+                <div class="col-md-6">
+                    <h4 class="card-title">Fotografia del Usuario</h4>
+                    <form #fotografia="ngForm" (ngSubmit)="FotografiaPerfil()">
+                        <div class="col-md-12" align="center">
+                         <img *ngIf="!imgTemporal" [src]="identity.imagen | imagen:identity.tipo_usuario" class="img-circle elevation-2 w-25" alt="User Image">   
+                         <img *ngIf="imgTemporal" [src]="imgTemporal" class="img-circle elevation-2 w-25" alt="User Image">   
+                        <input (change)="seleccioneImagen($event.target.files[0])" type="file" name="imagen"
+                                    [accept]="'image/*'"
+                                    class="form-control-file mt-3" >
+                            
+                        </div>
+                        <div class="col-12 mt-3">
+                            <div class="form-group " >
+                                <button type="submit" class="btn btn-success">
+                                    <span><i class="fa fa-floppy-o" aria-hidden="true"></i>
+                                    </span> Actualizar Foto</button>
+                            </div>
+                        </div>
+                        
+                     
+                    </form>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

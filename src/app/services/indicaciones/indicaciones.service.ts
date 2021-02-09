@@ -8,7 +8,7 @@ import { Http ,Headers} from '@angular/http';
 })
 export class IndicacionesMedicas {
   linkApi = 'http://127.0.0.1:8000/api/';
-  header:Headers;
+  // header:Headers;
   constructor(
     private httpcliente: HttpClient,
     private http: Http 

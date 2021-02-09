@@ -1,0 +1,180 @@
+<div class="card shadow">
+    <div class="card-header border-0">
+        <div class="row align-items-center">
+
+            <div class="col-md-6 col-xs-12">
+                <h3 class="box-title m-t-30 text-success">ENVIAR MENSAJE DE WHATSAPP <i class="fa fa-whatsapp"
+                        aria-hidden="true"></i></h3>
+            </div>
+            <div class="col-md-6 col-xs-12  text-right">
+                <a routerLink="/HistoriaMedica" class=" btn-sm btn btn-success">
+                    Cancelar y volver <i class="fa fa-sign-out"></i> </a>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <h3 class="font-weight-bold text-dark text-2 m-0 text-center">Datos del Paciente</h3>
+        <div class="col-md-12 p-0">
+            <div class="row">
+                <div class="col-md-6 p-0">
+                    <h4 class="text-center">Información Personal</h4>
+                    <div class="col-md-12 ">
+                        <div class="form-group m-0">
+                            <label class="d-flex m-0">Nombres: <p class="m-0 mt-1 ml-1">{{Informacion.Nombres}}</p>
+                                </label>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group m-0">
+                            <label class="d-flex m-0">Apellidos: <p class="m-0 mt-1 ml-1">{{Informacion.Apellidos}}</p>
+                                </label>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group m-0">
+                            <label class="d-flex m-0">Sexo: <p class="m-0 mt-1 ml-1">{{Informacion.Sexo}}</p></label>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group m-0">
+                            <label class="d-flex m-0">Edad: <p class="m-0 mt-1 ml-1">{{Informacion.Edad}} años</p>
+                                </label>
+
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group m-0">
+                            <label class="d-flex m-0">Fecha Nacimiento: <p class="m-0 mt-1 ml-1">
+                                    {{Informacion.FechaNacimiento | date: 'short' }} </p></label>
+
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group m-0">
+                            <label class="d-flex m-0">Dni: <p class="m-0 mt-1 ml-1">{{Informacion.Dni}} </p></label>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 p-0">
+                    <h4 class="text-center">Información Clinico</h4>
+                    <div class="col-md-12 ">
+                        <div class="form-group m-0">
+                            <label class="d-flex m-0">Temperatura: <p class="m-0 mt-1 ml-1">{{Informacion.Temperatura}}
+                                </p></label>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group m-0">
+                            <label class="d-flex m-0">Peso: <p class="m-0 mt-1 ml-1">{{Informacion.Peso}}</p></label>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group m-0">
+                            <label class="d-flex m-0">Talla: <p class="m-0 mt-1 ml-1">{{Informacion.Talla}}</p></label>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group m-0">
+                            <label class="d-flex m-0">Perimetro Abdominal: <p class="m-0 mt-1 ml-1">
+                                    {{Informacion.PerimetroAbdo}} años</p></label>
+
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group m-0">
+                            <label class="d-flex m-0">Frecuencia Cardiaca: <p class="m-0 mt-1 ml-1">
+                                    {{Informacion.FrecuenciaCardi}} </p></label>
+
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group m-0">
+                            <label class="d-flex m-0">Frecuencia Respiratoria: <p class="m-0 mt-1 ml-1">
+                                    {{Informacion.FrecuenciaRespi}} </p></label>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div>
+        <hr>
+        <form #enviarMensaje="ngForm" (ngSubmit)="EnviandoMensaje(enviarMensaje)" enctype="multipart/form-data">
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="tipo" class="label" class="font-weight-bold text-dark text-2 m-0">Tipo de Mensaje
+                    </label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text" id="btnGroupAddon"><i class="fa fa-envelope"
+                                    aria-hidden="true"></i>
+                            </div>
+                        </div>
+                        <select name="tipo" class="form-control" #tipo="ngModel" [(ngModel)]="Mensaje.tipoMensaje"
+                            (change)="CapturaTipo(Mensaje.tipoMensaje)"
+                            [ngClass]="{'is-valid': (tipo.valid),'is-invalid': (!tipo.valid && validar ) }" required>
+                            <option [disabled] value="" selected>Seleccione Tipo Mensaje</option>
+                            <option value="1">Mensaje de texto</option>
+                            <option value="2">Imagen + Mensaje de texto</option>
+                            <option value="3">Archivo + Mensaje de texto</option>
+                        </select>
+                        <small *ngIf="(!tipo.valid && tipo.touched) || (!tipo.valid && validar)"
+                            class="invalid-feedback d-block">
+                            Seleccione el Tipo de Mensaje.
+                        </small>
+
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label class="label" class=" font-weight-bold text-dark text-2 m-0">Celular/Movil</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text" id="btnGroupAddon"><i class="fa fa-mobile"
+                                    aria-hidden="true"></i></div>
+                        </div>
+                        <input type="number" name="celularPaciente" #celularPaciente="ngModel"
+                            [(ngModel)]="Mensaje.NumeroTelefono" name="celular" maxlength="9"
+                            class="form-control " pattern="[0-9]+" readonly
+                            [ngClass]="{'is-valid': (celularPaciente.valid  ),'is-invalid': !celularPaciente.valid &&  celularPaciente.touched }"
+                            [required]="true">
+                        <small *ngIf="(!celularPaciente.valid ) "
+                            class="invalid-feedback d-block">
+                            No Tiene Numero Valido Whatsapp.
+                        </small>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="motivoCons" class="font-weight-bold text-dark text-2 m-0">Texto</label>
+                        <ckeditor [(ngModel)]="Mensaje.Mensaje" #MotivoConsulta="ngModel" name="MotivoConsulta"
+                            [config]="ckeConfig" debounce="500"
+                            [ngClass]="{'is-valid': (MotivoConsulta.valid),'is-invalid': (!MotivoConsulta.valid && validar )}"
+                            [required]="true">
+                        </ckeditor>
+                        <small *ngIf="(!MotivoConsulta.valid && MotivoConsulta.touched) || (!MotivoConsulta.valid && validar)"
+                            class="invalid-feedback d-block">
+                            Debe escribir el mensaje.
+                        </small>
+                    </div>
+                </div>
+                <div class="col-md-12 d-none" id="Archivo_mensaje">
+                    <div class="custom-file">
+                        <label  class="texto_url"></label>
+                        <input type="text" class="form-control" id="Archivo"
+                        [(ngModel)]="Mensaje.Archivo" #ArchivoURL="ngModel" name="ArchivoURL">
+                    </div>
+                </div>
+                <div class="col-md-12 mt-3">
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-success">
+                            <span><i class="fa fa-share-square-o" aria-hidden="true"></i>
+                            </span> Enviar</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

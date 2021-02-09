@@ -30,6 +30,12 @@ export class HistoriapacienteService {
     .set('Authorization',token);
     return this.httpcliente.get(this.linkApi+'PacienteHistoria/listado',{headers:headers})
   }
+  listarHistoriaPacienteDeshabilitado(token):Observable<any>{
+    let headers=new HttpHeaders()
+    .set('Content-Type','application/x-www-form-urlencoded')
+    .set('Authorization',token);
+    return this.httpcliente.get(this.linkApi+'PacienteHistoria/listado/Deshabilitado',{headers:headers})
+  }
 
   DniExistentePaciente(token,dni):Observable<any>{
     let json=JSON.stringify(dni);
@@ -51,7 +57,17 @@ export class HistoriapacienteService {
     return this.httpcliente.post(this.linkApi+'DeshabilitarPaciente',params,{headers:headers})
   }
 
-  InsertarPaciente(token,datos):Observable<any>{
+  habilitarPaciente(token,id):Observable<any>{
+    let json=JSON.stringify(id);
+    let params='json='+json;
+    let headers=new HttpHeaders().
+    set('Content-Type','application/x-www-form-urlencoded')
+    .set('Authorization',token);
+
+    return this.httpcliente.post(this.linkApi+'habilitarPaciente',params,{headers:headers})
+  }
+
+  InsertarPaciente(token,datos,imagen):Observable<any>{
     let formData=new FormData();
     formData.append('id_paciente',datos.id_paciente)
     formData.append('id_user',datos.id_user)
@@ -90,6 +106,9 @@ export class HistoriapacienteService {
     formData.append('imageneologia',datos.imageneologia)
     formData.append('proximacita',datos.proximacita)
     formData.append('tratamiento',datos.tratamiento)
+    imagen.forEach(element => {
+      formData.append('imagen[]',element)
+    });
     const headers = new Headers({
       Authorization:token
     });

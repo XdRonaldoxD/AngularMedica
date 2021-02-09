@@ -130,6 +130,16 @@ public ckeConfig = {
     this.RenovandoPaciente();
     this.documentoPaciente=true;
   }
+  files: File[] = [];
+  onSelect(event) {
+    console.log(event);
+    this.files.push(...event.addedFiles);
+  }
+
+  onRemove(event) {
+    console.log(event);
+    this.files.splice(this.files.indexOf(event), 1);
+  }
 
   //Para subir la imagen del API
   afuConfig = {
@@ -224,7 +234,9 @@ public ckeConfig = {
   }
 
   EnviandoPaciente(Dato) {
-    console.log(Dato);
+    //Para que valide debes especificar el required
+    console.log(Dato.valid);
+
     var paciente = this.paciente;
     if (
       paciente.NumeroCitaMedica == "" ||
@@ -254,7 +266,7 @@ public ckeConfig = {
       this.paciente.FechaNaciemto=this.datePipe.transform(this.fecha,"yyyy-MM-dd HH:mm");
       localStorage.removeItem("Diagnostico");
       this._HistoriaPaciente
-        .InsertarPaciente(this.token, this.paciente)
+        .InsertarPaciente(this.token, this.paciente,this.files)
         .subscribe((datos) => {
           console.log(datos);
           this._route.navigate(["/HistoriaMedica/1"]);

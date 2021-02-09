@@ -1,64 +1,168 @@
-<div class="container-fluid">
-    <button class="btn  btn-success btn-flat  btn-sm mb-2 text-white" (click)="openModal(template)">
-        <i class="fa fa-user" aria-hidden="true"></i> Agregar Usuarios</button>
-    <div class="">
+<div class="container">
+    <h1>LISTA DE MEDICOS</h1>
+    <button (click)="openModal(template)" class="btn  btn-success btn-flat  btn-sm mb-2 text-white">
+        <i class="fa fa-user" aria-hidden="true"></i> Agregar Doctor(@)</button>
+
+    <ul id="tabs" class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a id="tab-A" href="#pane-A" class="nav-link active" data-toggle="tab" role="tab">HABILITADO </a>
+        </li>
+        <li class="nav-item">
+            <a id="tab-B" href="#pane-B" class="nav-link" data-toggle="tab" role="tab">DESHABILITADO</a>
+        </li>
+    </ul>
+    <div id="content" class="tab-content" role="tablist">
+        <div id="pane-A" class="card tab-pane fade show active" role="tabpanel" aria-labelledby="tab-A">
+            <div class="card-body">
+                <div class="size-pantalla">
+                    <!-- ANGULAR SERVER SIDE -->
+                    <table datatable [dtOptions]="dtOptions[0]" [dtTrigger]="dtTrigger" class="row-border hover "
+                        width="100%">
+                        <thead>
+                            <tr style="vertical-align: middle;text-align: center;" class="text-uppercase">
+                                <th>Nombre y Apellidos</th>
+                                <th>Email</th>
+                                <th>DNI</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <ng-container *ngFor="let e of informacion">
+                                <tr style="vertical-align: middle;text-align: center;">
+                                    <td>{{e.nombre}} {{e.apellido}}</td>
+                                    <td>{{e.email}}</td>
+                                    <td>{{e.dni}}</td>
+                                    <td>
+                                        <div class="row text-center">
+                                            <div class="col-md-3 col-xs-12">
+                                                <div class="center-block">
+                                                    <button class="btn btn-warning btn-sm text-white" data-toggle="modal"
+                                                    data-target=".bd-example-modal-lg"
+                                                    (click)="openModalEdit(Edittemplate,e.id)">
+                                                    <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                                                    Editar</button>
+                                                </div>
+                                             
+                                            </div>
+                                            <div class="col-md-3 col-xs-12">
+                                                <div class="center-block">
+                                                    <button class="btn  btn-danger btn-sm text-white ml-4"
+                                                    data-toggle="modal" data-target=".bd-eliminar-modal-lg"
+                                                    (click)="EliminarDoctor(e.id,e.nombre)">
+                                                    <i class="fa fa-times-circle mr-1"
+                                                        aria-hidden="true"></i>Eliminar</button>
+                                                </div>
+                                            
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </ng-container>
+                        </tbody>
+                        <tbody *ngIf="informacion?.length == 0">
+                            <tr>
+                                <td colspan="3" class="no-data-available">No data!</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="pane-B" class="card tab-pane fade" role="tabpanel" aria-labelledby="tab-B">
+            <div class="card-body">
+                <div class="size-pantalla">
+
+                    <!-- ANGULAR SERVER SIDE -->
+                    <table datatable [dtOptions]="dtOptions[1]" [dtTrigger]="dtTrigger2" class="row-border hover "
+                        width="100%">
+                        <thead>
+                            <tr style="vertical-align: middle;text-align: center;" class="text-uppercase">
+                                <th>Nombre y Apellidos</th>
+                                <th>Email</th>
+                                <th>DNI</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <ng-container *ngFor="let e of informacionDeshabilitado">
+                                <tr style="vertical-align: middle;text-align: center;">
+                                    <td>{{e.nombre}} {{e.apellido}}</td>
+                                    <td>{{e.email}}</td>
+                                    <td>{{e.dni}}</td>
+                                    <td>
+                                        <div class="row text-center">
+                                            <div class="col-md-3">
+                                                <button class="btn btn-warning btn-sm text-white" data-toggle="modal"
+                                                    data-target=".bd-example-modal-lg"
+                                                    (click)="openModalEdit(Edittemplate,e.id)">
+                                                    <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                                                    Editar</button>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <button class="btn  btn-success btn-sm text-white ml-3"
+                                                    data-toggle="modal" data-target=".bd-eliminar-modal-lg"
+                                                    (click)="ActivarDoctor(e.id,e.nombre)">
+                                                    <i class="fa fa-check-circle-o mr-1"
+                                                        aria-hidden="true"></i>Activar</button>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </ng-container>
+                        </tbody>
+                        <tbody *ngIf="informacionDeshabilitado?.length == 0">
+                            <tr>
+                                <td colspan="3" class="no-data-available">No data!</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+
+        </div>
 
     </div>
-    <div class="table-responsive" *ngIf="!cargando">
-        <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-hover"
-            style="width:100%">
-            <thead>
-                <tr style="vertical-align: middle;text-align: center;" class="text-uppercase">
-                    <th>Nombre y Apellidos</th>
-                    <th>Email</th>
-                    <th>DNI</th>
-                    <th>Acción</th>
-                </tr>
-            </thead>
-            <tbody>
-                <ng-container *ngFor="let e of data">
-                    <tr style="vertical-align: middle;text-align: center;">
-                        <td>{{e.nombre}} {{e.apellido}}</td>
-                        <td>{{e.email}}</td>
-                        <td>{{e.dni}}</td>
-                        <td>
-                            <div class="row text-center">
-                                <div class="col-md-3">
-                                    <button class="btn btn-warning btn-sm text-white" data-toggle="modal"
-                                        data-target=".bd-example-modal-lg" (click)="openModalEdit(Edittemplate,e.id)">
-                                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</button>
-                                </div>
-                                <div class="col-md-3">
-                                    <button class="btn  btn-danger btn-sm text-white ml-3" data-toggle="modal"
-                                        data-target=".bd-eliminar-modal-lg" (click)="EliminarDoctor(e.id,e.nombre)">
-                                        <i class="fa fa-times-circle mr-1" aria-hidden="true"></i>Eliminar</button>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                </ng-container>
-            </tbody>
-        </table>
-    </div>
-    <div class="row" *ngIf="cargando">
-        <div class="mx-auto">
-            <div class="loader">
-            </div>
-            <strong> Cargando...</strong>
+</div>
+
+
+<div class="row  d-none" id="cargando">
+    <div class="mx-auto">
+        <div class="loader">
         </div>
+        <strong> Cargando...</strong>
     </div>
 </div>
 <ng-template #template>
     <form #registrarDoctor="ngForm" (ngSubmit)="EnviandoDoctor(registrarDoctor)">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title text-break">Nuevos Datos del Doctor o Farmaceutica</h4>
+                <h4 class="modal-title text-break text-uppercase">Nuevos Datos del Doctor o Farmaceutica</h4>
                 <button type="button" class="close" (click)="modalRef.hide()" aria-label="Close">
                     <span aria-hidden="true">×</span>
                 </button>
             </div>
             <div class="modal-body">
                 <div class="row">
+                    <div class="col-md-12 d-flex justify-content-center">
+                        <div class="col-md-6 d-flex justify-content-center ">
+                            <div class="custom-dropzone" [multiple]="false" ngx-dropzone [accept]="'image/*'"
+                                (change)="onSelect($event)">
+                                <ngx-dropzone-label>
+                                    <div>
+                                        <h2>Seleccione la Imagén</h2>
+                                    </div>
+                                </ngx-dropzone-label>
+                                <ngx-dropzone-image-preview ngProjectAs="ngx-dropzone-preview" *ngFor="let f of files"
+                                    [file]="f" [removable]="true" (removed)="onRemove(f)">
+                                    <ngx-dropzone-label>{{ f.name }} ({{ f.type }})</ngx-dropzone-label>
+                                </ngx-dropzone-image-preview>
+                            </div>
+                        </div>
+
+                    </div>
                     <div class="col-6">
                         <label for="" class="p-0 m-0">Nombre</label>
                         <div class="input-group">
@@ -91,7 +195,7 @@
                             <input type="email" name="email" (change)="ValidarCorreo(user.email)" #email="ngModel"
                                 [(ngModel)]="user.email" class="form-control" required
                                 pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
-                                [ngClass]="{'is-valid': email.valid,'is-invalid': !email.valid || submitted}">
+                                [ngClass]="{'is-valid': email.valid,'is-invalid': (!email.valid && email.touched) || submitted}">
                             <small *ngIf="!email.valid && email.touched " class="invalid-feedback d-block">
                                 Ingrese correctamente el email
                             </small>
@@ -111,7 +215,7 @@
                             <input type="text" [minLength]='5' [maxlength]='8' name="DNI"
                                 (change)="ValidarDNI(user.dni)" #DNI="ngModel" [(ngModel)]="user.dni" pattern="[0-9]+"
                                 class="form-control " required
-                                [ngClass]="{'is-valid': DNI.valid,'is-invalid': !DNI.valid || dnivalido || dniExistente}">
+                                [ngClass]="{'is-valid': DNI.valid,'is-invalid': (!DNI.valid && DNI.touched) || dnivalido || dniExistente}">
                             <small *ngIf="dnivalido" class="invalid-feedback d-block">
                                 El DNI no es valido
                             </small>
@@ -168,7 +272,7 @@
     <form #actulizarDoctor="ngForm" (ngSubmit)="EditarDoctores(actulizarDoctor)">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title text-break">Editar Datos del Doctor o Farmaceutica</h4>
+                <h4 class="modal-title text-break text-uppercase">Editar Datos del Doctor o Farmaceutica</h4>
                 <button type="button" class="close" (click)="modalRef.hide()" aria-label="Close">
                     <span aria-hidden="true">×</span>
                 </button>
@@ -176,6 +280,22 @@
             <div class="modal-body">
                 <!-- <input type="text" [hidden]="true" name="id_doctor" #id_doctor="ngModel" [(ngModel)]="user.id_doctor" > -->
                 <div class="row">
+                    <div class="col-md-12 d-flex justify-content-center">
+                        <div class="col-md-6 d-flex justify-content-center ">
+                            <div class="custom-dropzone" [multiple]="false" ngx-dropzone [accept]="'image/*'"
+                                (change)="onSelect($event)">
+                                <ngx-dropzone-label>
+                                    <div>
+                                        <h2>Subir Imagén</h2>
+                                    </div>
+                                </ngx-dropzone-label>
+                                <ngx-dropzone-image-preview ngProjectAs="ngx-dropzone-preview" *ngFor="let f of files"
+                                    [file]="f" [removable]="true" (removed)="onRemove(f)">
+                                    <ngx-dropzone-label>{{ f.name }} ({{ f.type }})</ngx-dropzone-label>
+                                </ngx-dropzone-image-preview>
+                            </div>
+                        </div>
+                    </div>
                     <div class="col-6">
                         <label for="" class="p-0 m-0">Nombre</label>
                         <div class="input-group">

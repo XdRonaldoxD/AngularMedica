@@ -9,6 +9,15 @@ import { DataTableDirective } from "angular-datatables";
 import { DocumentoLaboratorio } from "src/app/services/documentoLaboratorio/Documento.service";
 import Swal from "sweetalert2";
 import * as fileSaver from "file-saver";
+import { HttpHeaders, HttpClient } from '@angular/common/http';
+
+class DataTablesResponse {
+  data: any[];
+  draw: number;
+  recordsFiltered: number;
+  recordsTotal: number;
+}
+
 @Component({
   selector: "app-historia-paciente",
   templateUrl: "./historia-paciente.component.html",
@@ -31,13 +40,15 @@ export class HistoriaPacienteComponent implements OnDestroy, OnInit {
   medico:any;
   guardar=true;
   loading=false;
+  visibleDocumento:boolean=false;
   ReportePdf:any="http://127.0.0.1:8000/api/Paciente/Reporte/";
   constructor(
     private datePipe: DatePipe,
     private _activateRoute: ActivatedRoute,
     public _HistoriaPaciente: HistoriapacienteService,
     public _userservico: UserService,
-    public _Documento: DocumentoLaboratorio
+    public _Documento: DocumentoLaboratorio,
+    private Http: HttpClient
   ) {
     this.paciente = new Paciente(
       null,
@@ -79,12 +90,24 @@ export class HistoriaPacienteComponent implements OnDestroy, OnInit {
     );
   }
   ngOnInit() {
+    this.visibleDocumento=false;
     this.token = this._userservico.getToken();
     this.MostrandoPaciente();
   }
   ngOnDestroy(): void {
     // Do not forget to unsubscribe the  (Datatable)
     this.dtTrigger.unsubscribe();
+  }
+  ngAfterViewInit(): void {
+    this.dtTrigger.next();
+
+  }
+  rerender(): void {
+    if (this.dtElement && this.dtElement.dtInstance) {
+      this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+        dtInstance.draw();
+      });
+    }
   }
   // Saber si se renovara o editar el paciente
   MostrandoPaciente() {
@@ -94,7 +117,6 @@ export class HistoriaPacienteComponent implements OnDestroy, OnInit {
         this._Documento
           .TraerDatoPaciente(this.token, this.id_paciente)
           .subscribe((datos) => {
-            console.log(datos);
             this.medico=datos.DocLaboratorio;
             this.usuario_id=datos.user_id;
             this.paciente.id_paciente=datos.id;
@@ -108,6 +130,59 @@ export class HistoriaPacienteComponent implements OnDestroy, OnInit {
       }
     });
   }
+  ListarDocumento(id_paciente) {
+ 
+    let headers=new HttpHeaders()
+    .set('Authorization',this.token);
+    const that = this;
+    this.dtOptions[0] = {
+      pagingType: "full_numbers",
+      pageLength: 3,
+      serverSide: true,
+      processing: true,
+      responsive: true,
+      destroy: true,
+      // scrollX:true,
+      language: {
+        url: "//cdn.datatables.net/plug-ins/1.10.21/i18n/Spanish.json",
+      },
+      ajax: (dataTablesParameters:any, callback) => {
+        dataTablesParameters.id_paciente=id_paciente;
+
+        that.Http.post<DataTablesResponse>(
+          "http://127.0.0.1:8000/api/TraerDocumento",
+          dataTablesParameters,{headers:headers}
+        ).subscribe((resp) => {
+          this.dataDocumento = resp.data;
+          callback({
+            recordsTotal: resp.recordsTotal,
+            recordsFiltered: resp.recordsFiltered,
+            data:[],
+          });
+        }),error=>{
+          console.log(error);
+        };
+      },
+      columns: [
+        {
+          sWidth:"15%"
+        },
+        {
+          sWidth:"45%"
+        },
+        {
+          sWidth:"25%"
+        },
+        {
+          sWidth:"25%"
+        }
+      ],
+    };
+
+
+  }
+
+
   public pending: boolean = false;
   ExportarDato(id){
     Swal.fire({
@@ -144,11 +219,7 @@ export class HistoriaPacienteComponent implements OnDestroy, OnInit {
     // a.setAttribute("visibility", "hidden");
     // a.href = "http://sangeronimohistoriaclinica.com/pdf-viewer-master/external/pdfjs-2.1.266-dist/web/vista.html" ;
     // a.click();
-     let visualizador=document.querySelector("#VisualizacionPdf");
-     let Documento=document.querySelector("#DocumentoAlmacenado");
-     visualizador.classList.remove("d-none");
-     Documento.classList.add("d-none");
-
+    this.visibleDocumento=true;
   }
   
   MostrarDocumento(file_name){
@@ -180,10 +251,7 @@ export class HistoriaPacienteComponent implements OnDestroy, OnInit {
               showConfirmButton: false,
               timer: 3000,
             });
-            this.dtElement.dtInstance.then((dtInstancia: DataTables.Api) => {
-              dtInstancia.destroy();
-              this.ListarDocumento(this.paciente.id_paciente);
-            });
+            this.rerender();
           }
         })
         
@@ -216,9 +284,9 @@ export class HistoriaPacienteComponent implements OnDestroy, OnInit {
       uploadAPI: {
         url: "http://127.0.0.1:8000/api/login/Paciente/pdf/update",
         method: "POST",
-        headers: {
-          Authorization: this.token,
-        },
+        // headers: {
+        //   Authorization: this.token,
+        // },
       },
       theme: "attachPin",
       hideProgressBar: false,
@@ -237,24 +305,7 @@ export class HistoriaPacienteComponent implements OnDestroy, OnInit {
       },
     };
 
-  ListarDocumento(id_paciente) {
-    this._Documento
-      .listarDocumentoPaciente(this.token, id_paciente)
-      .subscribe((doc) => {
-        console.log(doc);
-        this.dataDocumento = doc;
-        this.dtTrigger.next();
-      });
-    //Funcion del Datatable
-    this.dtOptions = {
-      pagingType: "full_numbers",
-      pageLength: 5,
-      ordering: false,
-      language: {
-        url: "//cdn.datatables.net/plug-ins/1.10.21/i18n/Spanish.json",
-      },
-    };
-  }
+
 
   EliminarDocumento(id_documento) {
     this._Documento.EliminarDocumento(this.token,id_documento)
@@ -270,10 +321,7 @@ export class HistoriaPacienteComponent implements OnDestroy, OnInit {
           showConfirmButton: false,
           timer: 3000,
         });
-        this.dtElement.dtInstance.then((dtInstancia: DataTables.Api) => {
-          dtInstancia.destroy();
-          this.ListarDocumento(this.paciente.id_paciente);
-        });
+        this.rerender();
       }
     }))
   }

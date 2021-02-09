@@ -10,6 +10,11 @@ export class SidebarService {
       icono: "fa fa-user-md",
       submenu: [
         {
+          titulo: "Perfil",
+          url: "/Perfil",
+          icono:"fa fa-user-circle-o",
+        },
+        {
           titulo: "Medicos",
           url: "/Doctores",
           icono:"fa fa-user-circle-o",

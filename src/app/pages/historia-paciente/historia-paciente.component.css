@@ -26,3 +26,16 @@
     border: rgba(208,214,32,1);
     color: black !important;
   }
+
+  .no-data-available {
+    text-align: center;
+  }
+  
+  /*
+     src/styles.css (i.e. your global style)
+  */
+
+
+  ::ng-deep table.dataTable td.dataTables_empty {
+    display: none;
+  }

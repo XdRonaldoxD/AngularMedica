@@ -8,6 +8,8 @@ import { RegistrarpacienteComponent } from './registrarpaciente/registrarpacient
 import { HistoriaPacienteComponent } from './historia-paciente/historia-paciente.component';
 import { QuillComponent } from './quill/quill.component';
 import { VerificaTokenGuard } from '../services/token/verifica-token.guard';
+import { EnviarMensajeComponent } from './enviar-mensaje/enviar-mensaje.component';
+import { PerfilComponent } from './perfil/perfil.component';
 const pagesRoutes : Routes =[
 
       {
@@ -29,6 +31,8 @@ const pagesRoutes : Routes =[
       // { path: "Quill", component: QuillComponent },
       { path: "RegistrarPaciente/:id_Paciente", component: RegistrarpacienteComponent ,canActivate:[VerificaTokenGuard]},
       { path: "HistorialPaciente/:id_Paciente", component: HistoriaPacienteComponent,canActivate:[VerificaTokenGuard] },
+      { path: "EnvioMensaje/:id_Paciente", component: EnviarMensajeComponent,canActivate:[VerificaTokenGuard] },
+      { path: "Perfil", component: PerfilComponent,canActivate:[VerificaTokenGuard] },
       //si la ruta es vacio redirecciona al dashboard
       { path: "", redirectTo: "/login", pathMatch: "full" },
     ],

@@ -5,6 +5,7 @@ import { HeaderComponent } from "./header/header.component";
 import { SidebarComponent } from "./sidebar/sidebar.component";
 import { BreadcumsComponent } from "./breadcums/breadcums.component";
 import { CommonModule } from '@angular/common';
+import { PipesModule } from '../pipes/pipes.module';
 
 
 
@@ -13,7 +14,7 @@ import { CommonModule } from '@angular/common';
   imports:[
     RouterModule,
     CommonModule,
-
+    PipesModule
   ],
   declarations: [
     NopagefoundComponent,

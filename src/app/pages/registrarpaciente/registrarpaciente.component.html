@@ -76,7 +76,7 @@
                         </div>
                         <!-- <input type="text" name="Sexo" class="form-control " value="{{ old('Sexo')}}" required> -->
                         <select name="Sexo" class="form-control" #Sexo="ngModel" [(ngModel)]="paciente.SexoPaciente"
-                            [ngStyle]="{'border': ( !selectGenero ) ? '1px solid red' : '1px solid green'}"
+                            [ngClass]="{'is-valid': (selectGenero && Sexo.touched ),'is-invalid': (!selectGenero && Sexo.touched ) }"
                             (change)="CapturaGenero(paciente.SexoPaciente)">
                             <option disabled value="" selected>Seleccione Genero</option>
                             <option value="Masculino">Masculino</option>
@@ -95,7 +95,7 @@
                         <input type="text" [minLength]='5' [maxlength]='8' name="DNI"
                             (change)="ValidarDNI(paciente.Dni)" #DNI="ngModel" [(ngModel)]="paciente.Dni"
                             pattern="[0-9]+" class="form-control " required
-                            [ngClass]="{'is-valid': DNI.valid,'is-invalid': !DNI.valid || dnivalido || dniExistente}">
+                            [ngClass]="{'is-valid': DNI.valid,'is-invalid': (!DNI.valid && DNI.touched ) || dnivalido || dniExistente || validar}">
                         <small *ngIf="dnivalido" class="invalid-feedback d-block">
                             El DNI no es valido
                         </small>
@@ -169,7 +169,11 @@
                                     aria-hidden="true"></i></div>
                         </div>
                         <input type="email" name="correo" #correo="ngModel" [(ngModel)]="paciente.Correo"
-                            class="form-control">
+                            class="form-control"  pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+                            [ngClass]="{'is-valid': (correo.valid && correo.touched) ,'is-invalid': (!correo.valid && correo.touched)}">
+                            <small *ngIf="!correo.valid && correo.touched " class="invalid-feedback d-block">
+                                Ingrese correctamente el email
+                            </small>
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -355,13 +359,34 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-12" *ngIf="documentoPaciente">
+                <!-- <div class="col-md-12" *ngIf="documentoPaciente">
                     <div class="form-group">
                         <label for="documento" class="h5  text-success text-uppercase">Adjuntar Documento del Laboratorio</label>
                         <angular-file-uploader [config]="DocumentoLaboratioPdf" [resetUpload]=resetVar
                             (ApiResponse)="PdfPacienteSubido($event)">
                         </angular-file-uploader>
                     </div>
+                </div> -->
+                <div class="col-md-12 ">
+             
+                        <div class="form-group">
+                            <label for="documento" class="h5  text-success text-uppercase">Adjuntar Documento del Laboratorio</label>
+                            <div class="custom-dropzone" [multiple]="true" ngx-dropzone [accept]="'.doc,.docx,.xls,.xlsx.,.pdf'"
+                            (change)="onSelect($event)">
+                            <ngx-dropzone-label>
+                                <div>
+                                    <h2>Subir Documento</h2>
+                                </div>
+                            </ngx-dropzone-label>
+                            <ngx-dropzone-preview ngProjectAs="ngx-dropzone-preview" *ngFor="let f of files"
+                                [file]="f" [removable]="true" (removed)="onRemove(f)">
+                                <ngx-dropzone-label>{{ f.name }} ({{ f.type }})</ngx-dropzone-label>
+                            </ngx-dropzone-preview>
+                        </div>
+                        </div>
+                       
+            
+
                 </div>
                 <div class="col-md-12">
                     <div class="form-group">

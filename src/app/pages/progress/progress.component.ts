@@ -7,7 +7,7 @@ import {
 } from "@angular/core";
 
 import { DataTableDirective } from "angular-datatables";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { UserService } from "../../services/Usuario/user.service";
 import { Subject } from "rxjs";
 import { Router, ActivatedRoute } from "@angular/router";
@@ -18,6 +18,14 @@ import { Paciente } from "../../models/paciente";
 
 import * as html2pdf from "html2pdf.js";
 import * as fileSaver from "file-saver";
+
+
+class DataTablesResponse {
+  data: any[];
+  draw: number;
+  recordsFiltered: number;
+  recordsTotal: number;
+}
 
 @Component({
   selector: "app-progress",
@@ -30,6 +38,7 @@ export class ProgressComponent implements OnDestroy, OnInit {
   isDtInitialized: boolean = false;
   dtOptions: DataTables.Settings = {};
   dtTrigger = new Subject();
+  dtTrigger2 = new Subject();
 
   ReportePdf = "http://127.0.0.1:8000/api/Paciente/Reporte/";
   public url: any = "http://127.0.0.1:8000/api/login/";
@@ -41,6 +50,7 @@ export class ProgressComponent implements OnDestroy, OnInit {
 
   //Recibe datos a la tabla paciente
   data: any;
+  deshabilitado: any;
   diagnosticado: any;
   Tratamientos: any;
   fecha_creacion: any;
@@ -49,7 +59,8 @@ export class ProgressComponent implements OnDestroy, OnInit {
     private _route: Router,
     public _HistoriaPaciente: HistoriapacienteService,
     private _activateRoute: ActivatedRoute,
-    private modalService: BsModalService
+    private modalService: BsModalService,
+    private Http: HttpClient,
   ) {
     this.token = this._userServicie.getToken();
     this.identity = this._userServicie.getIdentity();
@@ -98,11 +109,39 @@ export class ProgressComponent implements OnDestroy, OnInit {
       this._route.navigate(["/login"]);
     }
     this.listarPaciente();
+    this.listarPacienteDeshabilitado();
     this.PacienteRegistrado();
+    let size=document.querySelector('.size-pantalla');
+    if (screen.width < 1024) {
+      console.log("Pequeño");
+      size.classList.add('table-responsive');
+    }
+ else {
+    if (screen.width < 1280) {
+      size.classList.add('table-responsive');
+    }else{
+      console.log("Grande");
+      size.classList.remove('table-responsive');
+    }
+  }
+   //  $(".size-pantalla").removeClass("table-responsive")
+ 
   }
   ngOnDestroy(): void {
     // Do not forget to unsubscribe the event
     this.dtTrigger.unsubscribe();
+    this.dtTrigger2.unsubscribe();
+  }
+  ngAfterViewInit(): void {
+    this.dtTrigger.next();
+    this.dtTrigger2.next();
+  }
+  rerender(): void {
+    if (this.dtElement && this.dtElement.dtInstance) {
+      this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+        dtInstance.draw();
+      });
+    }
   }
 
   onExportPdf() {
@@ -125,21 +164,106 @@ export class ProgressComponent implements OnDestroy, OnInit {
   }
 
   listarPaciente() {
-    this._HistoriaPaciente
-      .listarHistoriaPaciente(this.token)
-      .subscribe((respuesta) => {
-        this.data = respuesta;
-        this.dtTrigger.next();
-      });
-    //Funcion del Datatable
-    this.dtOptions = {
+    let headers=new HttpHeaders()
+    .set('Authorization',this.token);
+        const that = this;
+        this.dtOptions[0] = {
+          pagingType: "full_numbers",
+          pageLength: 10,
+          serverSide: true,
+          processing: true,
+          responsive: true,
+          destroy: true,
+          language: {
+            url: "//cdn.datatables.net/plug-ins/1.10.21/i18n/Spanish.json",
+          },
+          ajax: (dataTablesParameters: any, callback) => {
+            that.Http.post<DataTablesResponse>(
+              "http://127.0.0.1:8000/api/PacienteHistoria/listado",
+              dataTablesParameters,{headers:headers}
+            ).subscribe((resp) => {
+              this.data = resp.data;
+              callback({
+                recordsTotal: resp.recordsTotal,
+                recordsFiltered: resp.recordsFiltered,
+                data: [],
+              });
+            });
+          },
+          columns: [
+            {
+              sWidth: "14.5%"
+            },
+            {
+              sWidth: "10.5%"
+            },
+            {
+              sWidth: "20.5%"
+            },
+            {
+              sWidth: "16.5%"
+            },
+            {
+              sWidth: "10.5%"
+            },
+            {
+              sWidth: "20.5%"
+            }
+          ],
+        };
+ 
+  }
+
+  listarPacienteDeshabilitado() {
+    let headers=new HttpHeaders()
+    .set('Authorization',this.token);
+    const that = this;
+    this.dtOptions[1] = {
       pagingType: "full_numbers",
-      pageLength: 5,
-      ordering: false,
+      pageLength: 10,
+      serverSide: true,
+      processing: true,
+      responsive: true,
+      destroy: true,
+      // scrollX:true,
       language: {
         url: "//cdn.datatables.net/plug-ins/1.10.21/i18n/Spanish.json",
       },
+      ajax: (dataTablesParameters: any, callback) => {
+        that.Http.post<DataTablesResponse>(
+          "http://127.0.0.1:8000/api/PacienteHistoria/listado/Deshabilitado",
+          dataTablesParameters,{headers:headers}
+        ).subscribe((resp) => {
+          this.deshabilitado  = resp.data;
+          callback({
+            recordsTotal: resp.recordsTotal,
+            recordsFiltered: resp.recordsFiltered,
+            data: [],
+          });
+        });
+      },
+      columns: [
+        {
+          sWidth: "14.5%"
+        },
+        {
+          sWidth: "10.5%"
+        },
+        {
+          sWidth: "20.5%"
+        },
+        {
+          sWidth: "16.5%"
+        },
+        {
+          sWidth: "10.5%"
+        },
+        {
+          sWidth: "20.5%"
+        }
+      ],
     };
+  
   }
 
   //Saber si se registro el paciente
@@ -174,11 +298,35 @@ export class ProgressComponent implements OnDestroy, OnInit {
           .subscribe((respu) => {
             console.log(respu);
           });
-        this.dtElement.dtInstance.then((dtInstancia: DataTables.Api) => {
-          dtInstancia.destroy();
-          this.listarPaciente();
+          this.rerender();
+        setTimeout(() => {
+          this.dtTrigger2.next();
         });
         Swal.fire("Deshabilitado!", "Paciente deshabilitado.", "success");
+      }
+    });
+  }
+
+  HabilitarDato(nombre, id_paciente) {
+    Swal.fire({
+      title: "¿Esta seguro de habilitar el paciente " + nombre + "?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Si",
+    }).then((result) => {
+      if (result.value) {
+        this._HistoriaPaciente
+          .habilitarPaciente(this.token, id_paciente)
+          .subscribe((respu) => {
+            console.log(respu);
+          });
+          this.rerender();
+          setTimeout(() => {
+            this.dtTrigger2.next();
+          });
+        Swal.fire("Habilitado!", "Paciente habilitado.", "success");
       }
     });
   }
@@ -189,6 +337,10 @@ export class ProgressComponent implements OnDestroy, OnInit {
 
   ConsultaHistoria(id_paciente) {
     this._route.navigate(["/HistorialPaciente/" + id_paciente]);
+  }
+
+  EnviarMensajeWhassap(id_paciente) {
+    this._route.navigate(["/EnvioMensaje/" + id_paciente]);
   }
 
   ExportarDato(id_paciente) {
@@ -213,9 +365,9 @@ export class ProgressComponent implements OnDestroy, OnInit {
   public pending: boolean = false;
   openReporte(id_paciente) {
     Swal.fire({
-      title: 'FICHA DEL PACIENTE',
-      html: 'Generando el reporte del Paciente...',
-      text: 'Generando el reporte del Paciente...',
+      title: "FICHA DEL PACIENTE",
+      html: "Generando el reporte del Paciente...",
+      text: "Generando el reporte del Paciente...",
       allowOutsideClick: false,
       showConfirmButton: false,
       onOpen: () => {
@@ -227,8 +379,7 @@ export class ProgressComponent implements OnDestroy, OnInit {
         xhr.open("GET", url, true);
         xhr.responseType = "blob";
         xhr.onreadystatechange = function () {
-          setTimeout(() => {
-          }, 0);
+          setTimeout(() => {}, 0);
           if (xhr.readyState === 4 && xhr.status === 200) {
             var blob = new Blob([this.response], { type: "application/pdf" });
             fileSaver.saveAs(blob, "Historia del Paciente.pdf");
@@ -236,8 +387,8 @@ export class ProgressComponent implements OnDestroy, OnInit {
           }
         };
         xhr.send();
-      }
-  })
+      },
+    });
   }
 
   // downloadFile() {

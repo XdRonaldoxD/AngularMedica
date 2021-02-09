@@ -1,0 +1,16 @@
+.sidebar-dark-primary .nav-sidebar > .nav-item > .nav-link.active{
+    background-color: #28a745;
+}
+.sidebar-dark-primary .nav-treeview > .nav-item > .nav-link.active, .sidebar-dark-primary .nav-treeview > .nav-item > .nav-link.active:hover{
+    background-color: rgb(32 204 204 / 90%);
+}
+[class*="sidebar-dark"] .user-panel{
+    border-bottom: 1px solid #f4faff;
+}
+
+[class*="sidebar-dark"] .brand-link{
+    border-bottom: 1px solid #f4faff; 
+}
+.hr{
+   background-color: aliceblue;
+}

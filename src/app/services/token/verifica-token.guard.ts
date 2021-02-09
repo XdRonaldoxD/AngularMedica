@@ -32,6 +32,7 @@ export class VerificaTokenGuard implements CanActivate {
             localStorage.removeItem("UserIdentificado");
             localStorage.removeItem("token");
             this._route.navigate(["/login"]);
+            return false;
           }
         });
     }

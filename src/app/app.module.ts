@@ -20,11 +20,15 @@ import { ServiceModulo } from './pages/service.module';
 
 
 
+
+
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     RegisterComponent,
+
+
 
   ],
   imports: [
